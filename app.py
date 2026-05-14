@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 import joblib
 
 # --- PAGE CONFIGURATION ---
@@ -18,7 +17,6 @@ st.markdown("Enter the vehicle's specifications below to get a data-driven marke
 # --- LOAD MODEL ---
 @st.cache_resource
 def load_model():
-    # Make sure 'test_final.pkl' is in the same folder as app.py
     return joblib.load('test_final.pkl')
 
 try:
@@ -28,38 +26,77 @@ except FileNotFoundError:
     st.error("⚠️ Model file 'test_final.pkl' not found. Please ensure it is in the same directory.")
     model_loaded = False
 
+# --- LOGIC: OTOMATISASI CAR CLASS ---
+luxury_brands = ['Porsche', 'Lamborghini', 'Bentley', 'Aston Martin', 'Ferrari', 'McLaren', 'Rolls-Royce', 'Lotus', 'Bugatti']
+premium_brands = ['BMW', 'Mercedes-Benz', 'Audi', 'Lexus', 'Cadillac', 'Jaguar', 'Genesis', 'Lincoln', 'Land Rover', 'Alfa Romeo', 'Maserati']
+entry_level_brands = ['Kia', 'Hyundai', 'Mitsubishi', 'Nissan', 'Suzuki', 'FIAT', 'smart', 'Scion', 'Saturn', 'Pontiac', 'Mercury']
+
+def get_car_class(selected_brand):
+    if selected_brand in luxury_brands: return '1. Luxury'
+    elif selected_brand in premium_brands: return '2. Premium'
+    elif selected_brand in entry_level_brands: return '4. Entry Level'
+    else: return '3. Mainstream'
+
+# --- LOGIC: DATABASE DYNAMIC DROPDOWN ---
+# Catatan: Karena kita tidak me-load file CSV di cloud agar aplikasi tetap ringan,
+# kita membuat kamus data (dictionary) untuk memetakan Brand ke Modelnya.
+brand_model_dict = {
+    "Aston Martin": ["Vantage", "DB11", "DBS", "Valhalla"],
+    "BMW": ["330i Sport", "M3", "M4", "X5", "7 Series"],
+    "Dodge": ["Charger SRT", "Challenger", "Durango", "Viper"],
+    "Hyundai": ["Elantra Standard", "Palisade", "Santa Fe", "Ioniq 5"],
+    "Porsche": ["911 Turbo", "Cayman", "Panamera", "Macan", "Taycan"],
+    "Toyota": ["Camry XLE", "Corolla", "Land Cruiser", "Supra", "GR Yaris"],
+    "Honda": ["Civic Type R", "Accord", "CR-V", "HR-V"],
+    "Ford": ["Mustang", "F-150", "Bronco", "Explorer"]
+}
+
 # --- USER INPUT FORM ---
 if model_loaded:
     with st.form("prediction_form"):
         st.subheader("Vehicle Identity")
+        
+        # Baris 1: Brand dan Model (Dinamis)
         col1, col2 = st.columns(2)
         with col1:
-            brand = st.text_input("Brand", value="BMW", help="e.g., BMW, Toyota, Porsche")
-            car_class = st.selectbox("Car Class", ['1. Luxury', '2. Premium', '3. Mainstream', '4. Entry Level'])
-            model_year = st.number_input("Model Year", min_value=1990, max_value=2026, value=2021, step=1)
+            # Dropdown Brand mengambil dari kunci (keys) di dictionary
+            brand = st.selectbox("Brand", list(brand_model_dict.keys()))
         with col2:
+            # Dropdown Model otomatis berubah isi list-nya mengikuti Brand yang dipilih
+            model_name = st.selectbox("Model", brand_model_dict[brand])
+
+        # Baris 2: Tahun dan Milage
+        col3, col4 = st.columns(2)
+        with col3:
+            model_year = st.selectbox("Model Year", list(range(2026, 1989, -1)), index=5) # Default di tahun 2021
+        with col4:
             milage = st.number_input("Milage (miles)", min_value=0, value=30000, step=1000)
-            accident = st.selectbox("Accident History", ["None Reported", "Accident/Damage Reported"])
-        
+            
         st.markdown("---")
         
         st.subheader("Technical Specifications")
-        col3, col4 = st.columns(2)
-        with col3:
+        
+        # Tampilkan Car Class secara otomatis tanpa perlu diinput user
+        car_class = get_car_class(brand)
+        st.info(f"💡 System Auto-Detected Car Segment: **{car_class}**")
+        
+        col5, col6 = st.columns(2)
+        with col5:
             horsepower = st.number_input("Horsepower (HP)", min_value=0.0, value=335.0, step=10.0)
             engine_liter = st.number_input("Engine Capacity (L)", min_value=0.0, value=3.0, step=0.1)
             cylinders = st.number_input("Cylinders", min_value=0.0, value=6.0, step=1.0)
-        with col4:
+        with col6:
             fuel_type = st.selectbox("Fuel Type", ["Gasoline", "Diesel", "Hybrid", "Electric", "E85 Flex Fuel", "Other"])
             transmission = st.selectbox("Transmission", ["Automatic", "Manual", "Dual Shift", "CVT", "Other"])
+            accident = st.selectbox("Accident History", ["None Reported", "Accident/Damage Reported"])
             
         st.markdown("---")
         
         st.subheader("Cosmetics")
-        col5, col6 = st.columns(2)
-        with col5:
+        col7, col8 = st.columns(2)
+        with col7:
             ext_col_group = st.selectbox("Exterior Color", ["Neutral", "Exotic"])
-        with col6:
+        with col8:
             int_col_group = st.selectbox("Interior Color", ["Neutral", "Exotic"])
 
         # Submit button
@@ -67,10 +104,8 @@ if model_loaded:
 
 # --- PREDICTION LOGIC ---
 if model_loaded and submit_button:
-    # 1. Map the text selection back to the binary integer your model expects
     accident_val = 0 if accident == "None Reported" else 1
 
-    # 2. Package inputs into a DataFrame mapping exactly to your training features
     input_data = pd.DataFrame({
         'model_year': [model_year],
         'milage': [milage],
@@ -86,17 +121,12 @@ if model_loaded and submit_button:
         'accident': [accident_val]
     })
 
-    # 3. Execute Prediction
     try:
-        # Predict returns the log_price
         log_price_pred = model.predict(input_data)
-        
-        # Convert log_price back to actual dollar amount
         actual_price = np.expm1(log_price_pred)[0]
 
-        # 4. Display Result
         st.success("### 🎯 Estimated Market Value")
-        st.metric(label=f"{brand} ({car_class})", value=f"${actual_price:,.2f}")
+        st.metric(label=f"{brand} {model_name} ({model_year})", value=f"${actual_price:,.2f}")
         
     except Exception as e:
         st.error(f"An error occurred during prediction: {e}")
