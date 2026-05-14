@@ -13,19 +13,16 @@ st.set_page_config(
 # --- CUSTOM CSS UI ---
 st.markdown("""
 <style>
-    /* Main background */
     .stApp {
         background: linear-gradient(135deg, #f5f7fb 0%, #eef2f7 100%);
     }
 
-    /* Main container */
     .block-container {
         padding-top: 1.5rem;
         padding-bottom: 2rem;
         max-width: 1250px;
     }
 
-    /* Hide Streamlit default decoration */
     #MainMenu {
         visibility: hidden;
     }
@@ -38,7 +35,6 @@ st.markdown("""
         visibility: hidden;
     }
 
-    /* Sidebar */
     section[data-testid="stSidebar"] {
         background: linear-gradient(180deg, #101828 0%, #1d2939 100%);
         border-right: 1px solid rgba(255, 255, 255, 0.08);
@@ -74,7 +70,6 @@ st.markdown("""
         margin: 1.2rem 0;
     }
 
-    /* Hero dashboard */
     .hero-card {
         background: linear-gradient(135deg, #101828 0%, #1d2939 100%);
         padding: 2rem 2.2rem;
@@ -114,7 +109,6 @@ st.markdown("""
         padding-left: 0.25rem;
     }
 
-    /* Dashboard cards */
     .dashboard-card {
         background: white;
         padding: 1.4rem 1.5rem;
@@ -143,6 +137,7 @@ st.markdown("""
         padding: 1.25rem;
         border: 1px solid #eaecf0;
         box-shadow: 0 8px 22px rgba(16, 24, 40, 0.06);
+        min-height: 108px;
     }
 
     .summary-label {
@@ -165,9 +160,55 @@ st.markdown("""
         color: #475467;
         font-size: 0.92rem;
         font-weight: 650;
+        margin-top: 0.2rem;
     }
 
-    /* Streamlit widgets */
+    .mini-card {
+        background: #f9fafb;
+        border: 1px solid #eaecf0;
+        border-radius: 18px;
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .mini-label {
+        color: #667085;
+        font-size: 0.78rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.35rem;
+    }
+
+    .mini-value {
+        color: #101828;
+        font-size: 1.05rem;
+        font-weight: 850;
+    }
+
+    .feature-pill {
+        display: inline-block;
+        background: #f2f4f7;
+        color: #344054;
+        padding: 0.38rem 0.65rem;
+        border-radius: 999px;
+        font-size: 0.82rem;
+        font-weight: 700;
+        margin: 0.2rem 0.15rem;
+        border: 1px solid #eaecf0;
+    }
+
+    .step-box {
+        background: #f9fafb;
+        border: 1px solid #eaecf0;
+        border-radius: 16px;
+        padding: 0.85rem 1rem;
+        margin-bottom: 0.6rem;
+        color: #344054;
+        font-size: 0.9rem;
+        font-weight: 650;
+    }
+
     div[data-baseweb="select"] > div {
         border-radius: 14px;
         border-color: #d0d5dd;
@@ -192,7 +233,6 @@ st.markdown("""
         font-size: 0.92rem !important;
     }
 
-    /* Button */
     .stButton > button {
         width: 100%;
         height: 3.4rem;
@@ -212,21 +252,19 @@ st.markdown("""
         color: white;
     }
 
-    /* Info box */
     div[data-testid="stAlert"] {
         border-radius: 16px;
         border: none;
         box-shadow: 0 6px 18px rgba(16, 24, 40, 0.06);
     }
 
-    /* Result card */
     .result-card {
         background: linear-gradient(135deg, #ecfdf3 0%, #d1fadf 100%);
         border: 1px solid #abefc6;
         padding: 2rem;
         border-radius: 26px;
         box-shadow: 0 16px 38px rgba(22, 163, 74, 0.16);
-        margin-top: 1.2rem;
+        margin-bottom: 1.2rem;
     }
 
     .result-label {
@@ -238,7 +276,7 @@ st.markdown("""
 
     .result-price {
         color: #054f31;
-        font-size: 3rem;
+        font-size: 2.65rem;
         font-weight: 950;
         margin-bottom: 0.5rem;
         letter-spacing: -0.05em;
@@ -247,7 +285,7 @@ st.markdown("""
 
     .result-caption {
         color: #067647;
-        font-size: 0.98rem;
+        font-size: 0.95rem;
         font-weight: 600;
     }
 
@@ -258,7 +296,7 @@ st.markdown("""
         border-radius: 26px;
         text-align: center;
         color: #667085;
-        margin-top: 1.2rem;
+        margin-bottom: 1.2rem;
     }
 
     .empty-result-title {
@@ -268,7 +306,6 @@ st.markdown("""
         margin-bottom: 0.35rem;
     }
 
-    /* Footer */
     .footer {
         text-align: center;
         color: #98a2b3;
@@ -276,7 +313,6 @@ st.markdown("""
         margin-top: 2rem;
     }
 
-    /* Responsive */
     @media (max-width: 768px) {
         .hero-title {
             font-size: 1.55rem;
@@ -355,6 +391,20 @@ if data_ready:
     # Filter data spesifik untuk kombinasi Brand, Model, dan Tahun
     exact_car = filtered_years[filtered_years['model_year'] == selected_year]
 
+    # --- CAR CLASS ---
+    car_class = get_car_class(selected_brand)
+    car_class_display = car_class.split(". ", 1)[1]
+
+    # --- DATASET INSIGHTS ---
+    similar_records = len(exact_car)
+    median_milage = int(exact_car['milage'].median())
+    median_hp = round(exact_car['horsepower'].median(), 1)
+    median_engine = round(exact_car['engine_liter'].median(), 1)
+
+    min_milage = int(exact_car['milage'].min())
+    max_milage = int(exact_car['milage'].max())
+    avg_milage = int(exact_car['milage'].mean())
+
     # --- HERO SECTION ---
     st.markdown("""
     <div class="hero-card">
@@ -379,9 +429,6 @@ if data_ready:
     """, unsafe_allow_html=True)
 
     summary_col1, summary_col2, summary_col3, summary_col4 = st.columns(4)
-
-    car_class = get_car_class(selected_brand)
-    car_class_display = car_class.split(". ", 1)[1]
 
     with summary_col1:
         st.markdown(f"""
@@ -412,6 +459,54 @@ if data_ready:
         <div class="summary-card">
             <div class="summary-label">Car Class</div>
             <div class="summary-value">{car_class_display}</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # --- DATASET INSIGHT SUMMARY ---
+    st.markdown("""
+    <div class="dashboard-card">
+        <div class="dashboard-title">Dataset Insight</div>
+        <div class="dashboard-desc">Quick benchmark from similar records in the dataset.</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    insight_col1, insight_col2, insight_col3, insight_col4 = st.columns(4)
+
+    with insight_col1:
+        st.markdown(f"""
+        <div class="summary-card">
+            <div class="summary-label">Similar Records</div>
+            <div class="summary-value">{similar_records}</div>
+            <div class="summary-small">cars found</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with insight_col2:
+        st.markdown(f"""
+        <div class="summary-card">
+            <div class="summary-label">Median Milage</div>
+            <div class="summary-value">{median_milage:,}</div>
+            <div class="summary-small">miles</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with insight_col3:
+        st.markdown(f"""
+        <div class="summary-card">
+            <div class="summary-label">Median Horsepower</div>
+            <div class="summary-value">{median_hp}</div>
+            <div class="summary-small">HP</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with insight_col4:
+        st.markdown(f"""
+        <div class="summary-card">
+            <div class="summary-label">Median Engine</div>
+            <div class="summary-value">{median_engine}L</div>
+            <div class="summary-small">engine capacity</div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -460,23 +555,6 @@ if data_ready:
 
         st.markdown("</div>", unsafe_allow_html=True)
 
-    with right_col:
-        st.markdown("""
-        <div class="dashboard-card">
-            <div class="dashboard-title">Prediction Result</div>
-            <div class="dashboard-desc">Estimated market price will appear after prediction.</div>
-        """, unsafe_allow_html=True)
-
-        if "final_price" not in st.session_state:
-            st.markdown(f"""
-            <div class="empty-result-card">
-                <div class="empty-result-title">No Prediction Yet</div>
-                Complete the technical specifications and click <b>Predict Market Price</b>.
-            </div>
-            """, unsafe_allow_html=True)
-
-        st.markdown("</div>", unsafe_allow_html=True)
-
     # --- PREDICTION LOGIC ---
     if predict_btn:
         acc_val = 0 if accident == "None Reported" else 1
@@ -506,13 +584,81 @@ if data_ready:
         except Exception as e:
             st.error(f"Prediction error occurred: {e}")
 
-    # --- RESULT DISPLAY ---
-    if "final_price" in st.session_state:
+    with right_col:
+        st.markdown("""
+        <div class="dashboard-card">
+            <div class="dashboard-title">Prediction Result</div>
+            <div class="dashboard-desc">Estimated market price will appear after prediction.</div>
+        """, unsafe_allow_html=True)
+
+        if "final_price" in st.session_state:
+            st.markdown(f"""
+            <div class="result-card">
+                <div class="result-label">🎯 Estimated Market Price</div>
+                <div class="result-price">${st.session_state.final_price:,.2f}</div>
+                <div class="result-caption">{st.session_state.prediction_caption}</div>
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.markdown("""
+            <div class="empty-result-card">
+                <div class="empty-result-title">No Prediction Yet</div>
+                Complete the technical specifications and click <b>Predict Market Price</b>.
+            </div>
+            """, unsafe_allow_html=True)
+
+        st.markdown("</div>", unsafe_allow_html=True)
+
         st.markdown(f"""
-        <div class="result-card">
-            <div class="result-label">🎯 Estimated Market Price</div>
-            <div class="result-price">${st.session_state.final_price:,.2f}</div>
-            <div class="result-caption">{st.session_state.prediction_caption}</div>
+        <div class="dashboard-card">
+            <div class="dashboard-title">Selected Car Benchmark</div>
+            <div class="dashboard-desc">Milage distribution from similar selected vehicles.</div>
+
+            <div class="mini-card">
+                <div class="mini-label">Lowest Milage</div>
+                <div class="mini-value">{min_milage:,} miles</div>
+            </div>
+
+            <div class="mini-card">
+                <div class="mini-label">Average Milage</div>
+                <div class="mini-value">{avg_milage:,} miles</div>
+            </div>
+
+            <div class="mini-card">
+                <div class="mini-label">Highest Milage</div>
+                <div class="mini-value">{max_milage:,} miles</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("""
+        <div class="dashboard-card">
+            <div class="dashboard-title">How Prediction Works</div>
+            <div class="dashboard-desc">Short workflow of the prediction system.</div>
+
+            <div class="step-box">1. Select brand, model, and model year from the sidebar.</div>
+            <div class="step-box">2. Technical options adjust based on available dataset records.</div>
+            <div class="step-box">3. The regression model estimates the used car market price.</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("""
+        <div class="dashboard-card">
+            <div class="dashboard-title">Model Features</div>
+            <div class="dashboard-desc">Features used by the prediction model.</div>
+
+            <span class="feature-pill">Model Year</span>
+            <span class="feature-pill">Milage</span>
+            <span class="feature-pill">Horsepower</span>
+            <span class="feature-pill">Engine Liter</span>
+            <span class="feature-pill">Cylinders</span>
+            <span class="feature-pill">Brand</span>
+            <span class="feature-pill">Fuel Type</span>
+            <span class="feature-pill">Transmission</span>
+            <span class="feature-pill">Car Class</span>
+            <span class="feature-pill">Exterior Color</span>
+            <span class="feature-pill">Interior Color</span>
+            <span class="feature-pill">Accident</span>
         </div>
         """, unsafe_allow_html=True)
 
