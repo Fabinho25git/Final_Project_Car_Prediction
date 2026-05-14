@@ -52,6 +52,7 @@ if data_ready:
     year_list = sorted(filtered_years['model_year'].unique(), reverse=True)
     selected_year = st.selectbox("Model Year", year_list)
 
+    # Filter data spesifik untuk kombinasi Brand, Model, dan Tahun
     exact_car = filtered_years[filtered_years['model_year'] == selected_year]
 
     st.markdown("---")
@@ -65,10 +66,17 @@ if data_ready:
         
         col1, col2 = st.columns(2)
         with col1:
+            # Milage tetap input angka karena variasi per mobil sangat tinggi
             milage = st.number_input("Milage", min_value=0, value=int(exact_car['milage'].median()))
-            horsepower = st.number_input("Horsepower", min_value=0.0, value=float(exact_car['horsepower'].median()))
-            engine_liter = st.number_input("Engine Liter", min_value=0.0, value=float(exact_car['engine_liter'].median()), step=0.1)
-            cylinders = st.number_input("Cylinders", min_value=0.0, value=float(exact_car['cylinders'].median()), step=1.0)
+            
+            # HP, Engine Liter, dan Cylinders sekarang dinamis berdasarkan varian di dataset
+            hp_options = sorted(exact_car['horsepower'].unique().tolist())
+            el_options = sorted(exact_car['engine_liter'].unique().tolist())
+            cyl_options = sorted(exact_car['cylinders'].unique().tolist())
+            
+            horsepower = st.selectbox("Horsepower", hp_options)
+            engine_liter = st.selectbox("Engine Liter", el_options)
+            cylinders = st.selectbox("Cylinders", cyl_options)
         
         with col2:
             fuel_options = exact_car['fuel_type'].unique().tolist()
