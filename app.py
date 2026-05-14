@@ -88,6 +88,7 @@ st.markdown("""
         animation: fadeSlideLeft 0.65s ease-out;
     }
 
+    /* Header */
     .metro-header {
         background: linear-gradient(135deg, #0078D7 0%, #5C2D91 100%);
         padding: 2rem 2.2rem;
@@ -395,45 +396,6 @@ st.markdown("""
         font-weight: 900;
     }
 
-    /* Feature Pills */
-    .feature-pill {
-        display: inline-block;
-        background: #0078D7;
-        color: white;
-        padding: 0.42rem 0.7rem;
-        font-size: 0.82rem;
-        font-weight: 850;
-        margin: 0.2rem 0.15rem;
-        border-radius: 0px;
-    }
-
-    .feature-pill:nth-child(2n) {
-        background: #5C2D91;
-    }
-
-    .feature-pill:nth-child(3n) {
-        background: #E3008C;
-    }
-
-    .feature-pill:nth-child(4n) {
-        background: #107C10;
-    }
-
-    .feature-pill:nth-child(5n) {
-        background: #F7630C;
-    }
-
-    /* Step Box */
-    .step-box {
-        background: #f3f3f3;
-        color: #111111;
-        border-left: 6px solid #E3008C;
-        padding: 0.9rem 1rem;
-        margin-bottom: 0.65rem;
-        font-size: 0.9rem;
-        font-weight: 700;
-    }
-
     /* Navigation */
     .nav-card {
         background: rgba(255, 255, 255, 0.96);
@@ -611,40 +573,15 @@ if data_ready:
             </div>
             """, unsafe_allow_html=True)
 
-        left_home, right_home = st.columns([1.1, 0.9], gap="large")
-
-        with left_home:
-            st.markdown("""
-            <div class="metro-card metro-card-orange">
-                <div class="metro-card-title">How Prediction Works</div>
-                <div class="metro-card-desc">Short workflow of the prediction system.</div>
-
-                <div class="step-box">1. Select brand, model, and model year.</div>
-                <div class="step-box">2. Technical options adjust based on available dataset records.</div>
-                <div class="step-box">3. The regression model estimates the used car market price.</div>
+        st.markdown("""
+        <div class="metro-card metro-card-cyan">
+            <div class="metro-card-title">Project Overview</div>
+            <div class="metro-card-desc">
+                This application predicts used car market prices using selected vehicle specifications from the dataset.
+                The interface is designed with a Microsoft Lumia / Metro-inspired tile layout.
             </div>
-            """, unsafe_allow_html=True)
-
-        with right_home:
-            st.markdown("""
-            <div class="metro-card metro-card-magenta">
-                <div class="metro-card-title">Model Features</div>
-                <div class="metro-card-desc">Features used by the prediction model.</div>
-
-                <span class="feature-pill">Model Year</span>
-                <span class="feature-pill">Milage</span>
-                <span class="feature-pill">Horsepower</span>
-                <span class="feature-pill">Engine Liter</span>
-                <span class="feature-pill">Cylinders</span>
-                <span class="feature-pill">Brand</span>
-                <span class="feature-pill">Fuel Type</span>
-                <span class="feature-pill">Transmission</span>
-                <span class="feature-pill">Car Class</span>
-                <span class="feature-pill">Exterior Color</span>
-                <span class="feature-pill">Interior Color</span>
-                <span class="feature-pill">Accident</span>
-            </div>
-            """, unsafe_allow_html=True)
+        </div>
+        """, unsafe_allow_html=True)
 
         st.button("Go to Prediction Page", on_click=go_prediction, type="primary")
 
@@ -841,26 +778,6 @@ if data_ready:
 
             st.markdown("</div>", unsafe_allow_html=True)
 
-            st.markdown("""
-            <div class="metro-card metro-card-magenta">
-                <div class="metro-card-title">Model Features</div>
-                <div class="metro-card-desc">Features used by the prediction model.</div>
-
-                <span class="feature-pill">Model Year</span>
-                <span class="feature-pill">Milage</span>
-                <span class="feature-pill">Horsepower</span>
-                <span class="feature-pill">Engine Liter</span>
-                <span class="feature-pill">Cylinders</span>
-                <span class="feature-pill">Brand</span>
-                <span class="feature-pill">Fuel Type</span>
-                <span class="feature-pill">Transmission</span>
-                <span class="feature-pill">Car Class</span>
-                <span class="feature-pill">Exterior Color</span>
-                <span class="feature-pill">Interior Color</span>
-                <span class="feature-pill">Accident</span>
-            </div>
-            """, unsafe_allow_html=True)
-
         # --- PREDICTION LOGIC ---
         if predict_btn:
             acc_val = 0 if accident == "None Reported" else 1
@@ -928,17 +845,6 @@ if data_ready:
                     <div class="benchmark-label">Highest Milage</div>
                     <div class="benchmark-value">{max_milage:,} miles</div>
                 </div>
-            </div>
-            """, unsafe_allow_html=True)
-
-            st.markdown("""
-            <div class="metro-card metro-card-orange">
-                <div class="metro-card-title">How Prediction Works</div>
-                <div class="metro-card-desc">Short workflow of the prediction system.</div>
-
-                <div class="step-box">1. Select brand, model, and model year.</div>
-                <div class="step-box">2. Technical options adjust based on available dataset records.</div>
-                <div class="step-box">3. The regression model estimates the used car market price.</div>
             </div>
             """, unsafe_allow_html=True)
 
