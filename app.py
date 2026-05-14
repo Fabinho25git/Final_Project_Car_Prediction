@@ -33,16 +33,31 @@ st.markdown("""
     }
 
     .hero-title {
-        font-size: 2.4rem;
+        font-size: 2.1rem;
         font-weight: 800;
         margin-bottom: 0.4rem;
         letter-spacing: -0.04em;
+        line-height: 1.2;
     }
 
     .hero-subtitle {
         font-size: 1rem;
         color: #d0d5dd;
-        margin-top: 0;
+        margin-top: 1rem;
+        margin-bottom: 0;
+    }
+
+    .team-list {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        color: #f2f4f7;
+        font-size: 0.98rem;
+        line-height: 1.45;
+        font-weight: 500;
+    }
+
+    .team-list p {
+        margin: 0.18rem 0;
     }
 
     /* Section card */
@@ -212,7 +227,14 @@ def get_car_class(brand):
 # --- UI START ---
 st.markdown("""
 <div class="hero-card">
-    <div class="hero-title">🚘 Car Price Predictor</div>
+    <div class="hero-title">🚘 Final Project Data Science Group 7 : Team Outliers</div>
+    <div class="team-list">
+        <p>Artorius Weelyn Jawra (Ketua)</p>
+        <p>Fabian Rashed Majduddin</p>
+        <p>Kurniati</p>
+        <p>Gunaryono Ary</p>
+        <p>Hashfi Hawali</p>
+    </div>
     <p class="hero-subtitle">Used car price prediction based on real-time dataset specifications.</p>
 </div>
 """, unsafe_allow_html=True)
