@@ -24,18 +24,18 @@ st.markdown("""
     /* Hero card */
     .hero-card {
         background: linear-gradient(135deg, #101828 0%, #1d2939 100%);
-        padding: 2.2rem 2rem;
+        padding: 2.2rem 2.4rem;
         border-radius: 24px;
         box-shadow: 0 18px 45px rgba(16, 24, 40, 0.18);
         margin-bottom: 1.8rem;
         color: white;
-        text-align: center;
+        text-align: left;
     }
 
     .hero-title {
         font-size: 2.1rem;
         font-weight: 800;
-        margin-bottom: 0.4rem;
+        margin-bottom: 1.2rem;
         letter-spacing: -0.04em;
         line-height: 1.2;
     }
@@ -43,21 +43,23 @@ st.markdown("""
     .hero-subtitle {
         font-size: 1rem;
         color: #d0d5dd;
-        margin-top: 1rem;
+        margin-top: 1.2rem;
         margin-bottom: 0;
     }
 
     .team-list {
-        margin-top: 1rem;
+        margin-top: 0.8rem;
         margin-bottom: 1rem;
         color: #f2f4f7;
         font-size: 0.98rem;
-        line-height: 1.45;
+        line-height: 1.7;
         font-weight: 500;
+        padding-left: 1.2rem;
     }
 
-    .team-list p {
+    .team-list li {
         margin: 0.18rem 0;
+        padding-left: 0.25rem;
     }
 
     /* Section card */
@@ -228,13 +230,13 @@ def get_car_class(brand):
 st.markdown("""
 <div class="hero-card">
     <div class="hero-title">🚘 Final Project Data Science Group 7 : Team Outliers</div>
-    <div class="team-list">
-        <p>Artorius Weelyn Jawra (Ketua)</p>
-        <p>Fabian Rashed Majduddin</p>
-        <p>Kurniati</p>
-        <p>Gunaryono Ary</p>
-        <p>Hashfi Hawali</p>
-    </div>
+    <ol class="team-list">
+        <li>Artorius Weelyn Jawra (Ketua)</li>
+        <li>Fabian Rashed Majduddin</li>
+        <li>Kurniati</li>
+        <li>Gunaryono Ary</li>
+        <li>Hashfi Hawali</li>
+    </ol>
     <p class="hero-subtitle">Used car price prediction based on real-time dataset specifications.</p>
 </div>
 """, unsafe_allow_html=True)
