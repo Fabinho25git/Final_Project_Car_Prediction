@@ -250,9 +250,14 @@ if data_ready:
 
     with st.form("spec_form"):
         car_class = get_car_class(selected_brand)
-        st.info(f"📋 Detected Car Class: **{car_class}**")
+
+        # Versi display hanya untuk tampilan UI
+        car_class_display = car_class.split(". ", 1)[1]
+
+        st.info(f"📋 Detected Car Class: **{car_class_display}**")
         
         col1, col2 = st.columns(2)
+
         with col1:
             # Milage tetap input angka karena variasi per mobil sangat tinggi
             milage = st.number_input("Milage", min_value=0, value=int(exact_car['milage'].median()))
