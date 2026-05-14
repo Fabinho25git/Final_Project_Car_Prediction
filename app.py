@@ -2,183 +2,10 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import joblib
+import requests
 
 # --- CONFIG PAGE ---
-st.set_page_config(page_title="Car Price Predictor", page_icon="🚘", layout="centered")
-
-# --- CUSTOM CSS UI ---
-st.markdown("""
-<style>
-    /* Main background */
-    .stApp {
-        background: linear-gradient(135deg, #f5f7fb 0%, #eef2f7 100%);
-    }
-
-    /* Main container */
-    .block-container {
-        padding-top: 2rem;
-        padding-bottom: 2rem;
-        max-width: 980px;
-    }
-
-    /* Hero card */
-    .hero-card {
-        background: linear-gradient(135deg, #101828 0%, #1d2939 100%);
-        padding: 2.2rem 2rem;
-        border-radius: 24px;
-        box-shadow: 0 18px 45px rgba(16, 24, 40, 0.18);
-        margin-bottom: 1.8rem;
-        color: white;
-        text-align: center;
-    }
-
-    .hero-title {
-        font-size: 2.4rem;
-        font-weight: 800;
-        margin-bottom: 0.4rem;
-        letter-spacing: -0.04em;
-    }
-
-    .hero-subtitle {
-        font-size: 1rem;
-        color: #d0d5dd;
-        margin-top: 0;
-    }
-
-    /* Section card */
-    .section-card {
-        background: white;
-        padding: 1.6rem;
-        border-radius: 22px;
-        box-shadow: 0 12px 30px rgba(16, 24, 40, 0.08);
-        border: 1px solid rgba(208, 213, 221, 0.7);
-        margin-bottom: 1.4rem;
-    }
-
-    .section-title {
-        font-size: 1.25rem;
-        font-weight: 750;
-        color: #101828;
-        margin-bottom: 0.4rem;
-    }
-
-    .section-desc {
-        color: #667085;
-        font-size: 0.92rem;
-        margin-bottom: 1.2rem;
-    }
-
-    /* Streamlit widgets */
-    div[data-baseweb="select"] > div {
-        border-radius: 14px;
-        border-color: #d0d5dd;
-        min-height: 44px;
-    }
-
-    div[data-baseweb="input"] > div {
-        border-radius: 14px;
-        border-color: #d0d5dd;
-        min-height: 44px;
-    }
-
-    .stNumberInput input {
-        border-radius: 14px;
-    }
-
-    label {
-        font-weight: 650 !important;
-        color: #344054 !important;
-        font-size: 0.92rem !important;
-    }
-
-    /* Button */
-    .stButton > button {
-        width: 100%;
-        height: 3.3rem;
-        border-radius: 16px;
-        border: none;
-        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-        color: white;
-        font-weight: 800;
-        font-size: 1rem;
-        box-shadow: 0 12px 25px rgba(220, 38, 38, 0.25);
-        transition: all 0.2s ease-in-out;
-    }
-
-    .stButton > button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 16px 35px rgba(220, 38, 38, 0.35);
-        color: white;
-    }
-
-    /* Info box */
-    div[data-testid="stAlert"] {
-        border-radius: 16px;
-        border: none;
-        box-shadow: 0 6px 18px rgba(16, 24, 40, 0.06);
-    }
-
-    /* Result card */
-    .result-card {
-        background: linear-gradient(135deg, #ecfdf3 0%, #d1fadf 100%);
-        border: 1px solid #abefc6;
-        padding: 1.8rem;
-        border-radius: 22px;
-        text-align: center;
-        box-shadow: 0 14px 35px rgba(22, 163, 74, 0.16);
-        margin-top: 1.3rem;
-    }
-
-    .result-label {
-        color: #067647;
-        font-size: 1rem;
-        font-weight: 700;
-        margin-bottom: 0.4rem;
-    }
-
-    .result-price {
-        color: #054f31;
-        font-size: 2.4rem;
-        font-weight: 900;
-        margin-bottom: 0.4rem;
-        letter-spacing: -0.04em;
-    }
-
-    .result-caption {
-        color: #067647;
-        font-size: 0.95rem;
-    }
-
-    /* Divider */
-    hr {
-        border: none;
-        height: 1px;
-        background: #eaecf0;
-        margin: 1.5rem 0;
-    }
-
-    /* Footer */
-    .footer {
-        text-align: center;
-        color: #98a2b3;
-        font-size: 0.9rem;
-        margin-top: 2rem;
-    }
-
-    /* Hide Streamlit default decoration */
-    #MainMenu {
-        visibility: hidden;
-    }
-
-    footer {
-        visibility: hidden;
-    }
-
-    header {
-        visibility: hidden;
-    }
-</style>
-""", unsafe_allow_html=True)
+st.set_page_config(page_title="Car Price Predictor", page_icon="🚘", layout="wide")
 
 # --- LOAD DATA & MODEL ---
 @st.cache_data
@@ -198,6 +25,47 @@ except Exception as e:
     st.error(f"⚠️ Failed to load data or model: {e}")
     data_ready = False
 
+# --- LOGIKA PENCARIAN GAMBAR WIKIPEDIA (DINAMIS & AKURAT) ---
+@st.cache_data(show_spinner=False)
+def get_car_image(brand, model_name):
+    # Kata kunci pencarian ditambah kata 'car' agar Wikipedia tidak bingung
+    search_query = f"{brand} {model_name} car automobile"
+    search_url = "https://en.wikipedia.org/w/api.php"
+    
+    # Langkah 1: Cari judul halaman Wikipedia yang paling relevan
+    search_params = {
+        "action": "query",
+        "list": "search",
+        "srsearch": search_query,
+        "format": "json"
+    }
+    
+    try:
+        search_res = requests.get(search_url, params=search_params).json()
+        if search_res['query']['search']:
+            # Ambil judul artikel teratas
+            title = search_res['query']['search'][0]['title']
+            
+            # Langkah 2: Ambil gambar thumbnail utama dari artikel tersebut
+            img_params = {
+                "action": "query",
+                "titles": title,
+                "prop": "pageimages",
+                "format": "json",
+                "pithumbsize": 800 # Ukuran gambar 800px
+            }
+            img_res = requests.get(search_url, params=img_params).json()
+            pages = img_res['query']['pages']
+            
+            for page_id in pages:
+                if 'thumbnail' in pages[page_id]:
+                    return pages[page_id]['thumbnail']['source']
+    except Exception:
+        pass
+    
+    # Gambar siluet default jika Wikipedia tidak memiliki foto mobil tersebut
+    return "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=800&q=80"
+
 # --- LOGIC CAR CLASS ---
 luxury_brands = ['Porsche', 'Lamborghini', 'Bentley', 'Aston Martin', 'Ferrari', 'McLaren', 'Rolls-Royce', 'Lotus', 'Bugatti']
 premium_brands = ['BMW', 'Mercedes-Benz', 'Audi', 'Lexus', 'Cadillac', 'Jaguar', 'Genesis', 'Lincoln', 'Land Rover', 'Alfa Romeo', 'Maserati']
@@ -210,54 +78,47 @@ def get_car_class(brand):
     else: return '3. Mainstream'
 
 # --- UI START ---
-st.markdown("""
-<div class="hero-card">
-    <div class="hero-title">🚘 Car Price Predictor</div>
-    <p class="hero-subtitle">Used car price prediction based on real-time dataset specifications.</p>
-</div>
-""", unsafe_allow_html=True)
+st.title("🚘 Car Price Predictor")
+st.markdown("Used car price prediction based on real-time dataset specifications.")
 
 if data_ready:
-    # --- DYNAMIC FILTERING LOGIC ---
-    st.markdown("""
-    <div class="section-card">
-        <div class="section-title">Vehicle Selection</div>
-        <div class="section-desc">Choose the car identity before entering the technical specifications.</div>
-    """, unsafe_allow_html=True)
+    # --- DYNAMIC FILTERING & IMAGE RENDER ---
+    col_img, col_filter = st.columns([1, 1.2]) 
 
-    brand_list = sorted(df_raw['brand'].unique())
-    selected_brand = st.selectbox("Brand", brand_list)
+    with col_filter:
+        st.subheader("Vehicle Identity")
+        brand_list = sorted(df_raw['brand'].unique())
+        selected_brand = st.selectbox("Brand", brand_list)
 
-    filtered_models = df_raw[df_raw['brand'] == selected_brand]
-    model_list = sorted(filtered_models['model'].unique())
-    selected_model = st.selectbox("Model", model_list)
+        filtered_models = df_raw[df_raw['brand'] == selected_brand]
+        model_list = sorted(filtered_models['model'].unique())
+        selected_model = st.selectbox("Model", model_list)
 
-    filtered_years = filtered_models[filtered_models['model'] == selected_model]
-    year_list = sorted(filtered_years['model_year'].unique(), reverse=True)
-    selected_year = st.selectbox("Model Year", year_list)
+        filtered_years = filtered_models[filtered_models['model'] == selected_model]
+        year_list = sorted(filtered_years['model_year'].unique(), reverse=True)
+        selected_year = st.selectbox("Model Year", year_list)
 
-    st.markdown("</div>", unsafe_allow_html=True)
+    with col_img:
+        # Menjalankan fungsi penarik gambar otomatis dari Wikipedia
+        with st.spinner("Mencari gambar mobil..."):
+            img_url = get_car_image(selected_brand, selected_model)
+        st.image(img_url, caption=f"{selected_brand} {selected_model}", use_container_width=True)
 
-    # Filter data spesifik untuk kombinasi Brand, Model, dan Tahun
     exact_car = filtered_years[filtered_years['model_year'] == selected_year]
 
-    # --- FORM SPESIFIKASI ---
-    st.markdown("""
-    <div class="section-card">
-        <div class="section-title">Technical Specifications</div>
-        <div class="section-desc">Complete the specification details to generate the estimated market price.</div>
-    """, unsafe_allow_html=True)
+    st.markdown("---")
 
+    # --- FORM SPESIFIKASI ---
     with st.form("spec_form"):
+        st.subheader("Technical Specifications")
+        
         car_class = get_car_class(selected_brand)
         st.info(f"📋 Detected Car Class: **{car_class}**")
         
         col1, col2 = st.columns(2)
         with col1:
-            # Milage tetap input angka karena variasi per mobil sangat tinggi
             milage = st.number_input("Milage", min_value=0, value=int(exact_car['milage'].median()))
             
-            # HP, Engine Liter, dan Cylinders sekarang dinamis berdasarkan varian di dataset
             hp_options = sorted(exact_car['horsepower'].unique().tolist())
             el_options = sorted(exact_car['engine_liter'].unique().tolist())
             cyl_options = sorted(exact_car['cylinders'].unique().tolist())
@@ -276,10 +137,7 @@ if data_ready:
             ext_col = st.selectbox("Exterior Color", ["Neutral", "Exotic"])
             int_col = st.selectbox("Interior Color", ["Neutral", "Exotic"])
 
-        st.markdown("<br>", unsafe_allow_html=True)
         predict_btn = st.form_submit_button("Predict Market Price", type="primary")
-
-    st.markdown("</div>", unsafe_allow_html=True)
 
     if predict_btn:
         acc_val = 0 if accident == "None Reported" else 1
@@ -303,15 +161,10 @@ if data_ready:
             pred_log = model.predict(input_df)
             final_price = np.expm1(pred_log)[0]
 
-            st.markdown(f"""
-            <div class="result-card">
-                <div class="result-label">🎯 Estimated Price</div>
-                <div class="result-price">${final_price:,.2f}</div>
-                <div class="result-caption">Prediction for {selected_brand} {selected_model} ({selected_year})</div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.success(f"### 🎯 Estimated Price: ${final_price:,.2f}")
+            st.caption(f"Prediction for {selected_brand} {selected_model} ({selected_year})")
             
         except Exception as e:
             st.error(f"Prediction error occurred: {e}")
 
-st.markdown("<div class='footer'>Developed by Fabian RM</div>", unsafe_allow_html=True)
+st.markdown("<br><hr><p style='text-align: center; color: grey;'>Developed by Fabian RM</p>", unsafe_allow_html=True)
