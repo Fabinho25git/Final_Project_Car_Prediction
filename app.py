@@ -441,26 +441,26 @@ def get_car_class(brand):
 if data_ready:
     # --- HERO SECTION ---
     st.markdown("""
-    <div class="metro-header">
-        <div class="metro-title">🚘 Final Project Data Science Group 7 : Team Outliers</div>
-        <ol class="team-list">
-            <li>Artorius Weelyn Jawra (Ketua)</li>
-            <li>Fabian Rashed Majduddin</li>
-            <li>Kurniati</li>
-            <li>Gunaryono Ary</li>
-            <li>Hashfi Hawali</li>
-        </ol>
-        <p class="metro-subtitle">Used car price prediction based on real-time dataset specifications.</p>
-    </div>
-    """, unsafe_allow_html=True)
+<div class="metro-header">
+    <div class="metro-title">🚘 Final Project Data Science Group 7 : Team Outliers</div>
+    <ol class="team-list">
+        <li>Artorius Weelyn Jawra (Ketua)</li>
+        <li>Fabian Rashed Majduddin</li>
+        <li>Kurniati</li>
+        <li>Gunaryono Ary</li>
+        <li>Hashfi Hawali</li>
+    </ol>
+    <p class="metro-subtitle">Used car price prediction based on real-time dataset specifications.</p>
+</div>
+""", unsafe_allow_html=True)
 
     # --- VEHICLE SELECTION ---
     st.markdown("""
-    <div class="metro-card metro-card-purple">
-        <div class="metro-card-title">Vehicle Selection</div>
-        <div class="metro-card-desc">Select the vehicle identity before entering technical specifications.</div>
-    </div>
-    """, unsafe_allow_html=True)
+<div class="metro-card metro-card-purple">
+    <div class="metro-card-title">Vehicle Selection</div>
+    <div class="metro-card-desc">Select the vehicle identity before entering technical specifications.</div>
+</div>
+""", unsafe_allow_html=True)
 
     select_col1, select_col2, select_col3 = st.columns(3)
 
@@ -483,7 +483,7 @@ if data_ready:
 
     # --- CAR CLASS ---
     car_class = get_car_class(selected_brand)
-    car_class_display = car_class.split(". ", 1)[1]
+    car_class_display = car_class.split(". ", 1)[1] if ". " in car_class else car_class
 
     # --- DATASET INSIGHTS ---
     similar_records = len(exact_car)
@@ -502,78 +502,78 @@ if data_ready:
 
     with tile_col1:
         st.markdown(f"""
-        <div class="metro-tile tile-blue">
-            <div class="tile-label">Brand</div>
-            <div class="tile-value">{selected_brand}</div>
-            <div class="tile-small">Selected manufacturer</div>
-        </div>
-        """, unsafe_allow_html=True)
+<div class="metro-tile tile-blue">
+    <div class="tile-label">Brand</div>
+    <div class="tile-value">{selected_brand}</div>
+    <div class="tile-small">Selected manufacturer</div>
+</div>
+""", unsafe_allow_html=True)
 
     with tile_col2:
         st.markdown(f"""
-        <div class="metro-tile tile-purple">
-            <div class="tile-label">Model</div>
-            <div class="tile-value">{selected_model}</div>
-            <div class="tile-small">Selected vehicle model</div>
-        </div>
-        """, unsafe_allow_html=True)
+<div class="metro-tile tile-purple">
+    <div class="tile-label">Model</div>
+    <div class="tile-value">{selected_model}</div>
+    <div class="tile-small">Selected vehicle model</div>
+</div>
+""", unsafe_allow_html=True)
 
     with tile_col3:
         st.markdown(f"""
-        <div class="metro-tile tile-cyan">
-            <div class="tile-label">Model Year</div>
-            <div class="tile-value">{selected_year}</div>
-            <div class="tile-small">Production year</div>
-        </div>
-        """, unsafe_allow_html=True)
+<div class="metro-tile tile-cyan">
+    <div class="tile-label">Model Year</div>
+    <div class="tile-value">{selected_year}</div>
+    <div class="tile-small">Production year</div>
+</div>
+""", unsafe_allow_html=True)
 
     with tile_col4:
         st.markdown(f"""
-        <div class="metro-tile tile-magenta">
-            <div class="tile-label">Car Class</div>
-            <div class="tile-value">{car_class_display}</div>
-            <div class="tile-small">Detected automatically</div>
-        </div>
-        """, unsafe_allow_html=True)
+<div class="metro-tile tile-magenta">
+    <div class="tile-label">Car Class</div>
+    <div class="tile-value">{car_class_display}</div>
+    <div class="tile-small">Detected automatically</div>
+</div>
+""", unsafe_allow_html=True)
 
     # --- DATASET INSIGHT TILES ---
     insight_col1, insight_col2, insight_col3, insight_col4 = st.columns(4)
 
     with insight_col1:
         st.markdown(f"""
-        <div class="metro-tile tile-green">
-            <div class="tile-label">Similar Records</div>
-            <div class="tile-number">{similar_records}</div>
-            <div class="tile-small">cars found in dataset</div>
-        </div>
-        """, unsafe_allow_html=True)
+<div class="metro-tile tile-green">
+    <div class="tile-label">Similar Records</div>
+    <div class="tile-number">{similar_records}</div>
+    <div class="tile-small">cars found in dataset</div>
+</div>
+""", unsafe_allow_html=True)
 
     with insight_col2:
         st.markdown(f"""
-        <div class="metro-tile tile-orange">
-            <div class="tile-label">Median Milage</div>
-            <div class="tile-number">{median_milage:,}</div>
-            <div class="tile-small">miles</div>
-        </div>
-        """, unsafe_allow_html=True)
+<div class="metro-tile tile-orange">
+    <div class="tile-label">Median Milage</div>
+    <div class="tile-number">{median_milage:,}</div>
+    <div class="tile-small">miles</div>
+</div>
+""", unsafe_allow_html=True)
 
     with insight_col3:
         st.markdown(f"""
-        <div class="metro-tile tile-red">
-            <div class="tile-label">Median Horsepower</div>
-            <div class="tile-number">{median_hp}</div>
-            <div class="tile-small">HP</div>
-        </div>
-        """, unsafe_allow_html=True)
+<div class="metro-tile tile-red">
+    <div class="tile-label">Median Horsepower</div>
+    <div class="tile-number">{median_hp}</div>
+    <div class="tile-small">HP</div>
+</div>
+""", unsafe_allow_html=True)
 
     with insight_col4:
         st.markdown(f"""
-        <div class="metro-tile tile-dark">
-            <div class="tile-label">Median Engine</div>
-            <div class="tile-number">{median_engine}L</div>
-            <div class="tile-small">engine capacity</div>
-        </div>
-        """, unsafe_allow_html=True)
+<div class="metro-tile tile-dark">
+    <div class="tile-label">Median Engine</div>
+    <div class="tile-number">{median_engine}L</div>
+    <div class="tile-small">engine capacity</div>
+</div>
+""", unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -582,10 +582,10 @@ if data_ready:
 
     with left_col:
         st.markdown("""
-        <div class="metro-card">
-            <div class="metro-card-title">Technical Specifications</div>
-            <div class="metro-card-desc">Complete the specification details to generate the estimated market price.</div>
-        """, unsafe_allow_html=True)
+<div class="metro-card">
+    <div class="metro-card-title">Technical Specifications</div>
+    <div class="metro-card-desc">Complete the specification details to generate the estimated market price.</div>
+""", unsafe_allow_html=True)
 
         with st.form("spec_form"):
             st.info(f"📋 Detected Car Class: **{car_class_display}**")
@@ -621,24 +621,24 @@ if data_ready:
         st.markdown("</div>", unsafe_allow_html=True)
 
         st.markdown("""
-        <div class="metro-card metro-card-magenta">
-            <div class="metro-card-title">Model Features</div>
-            <div class="metro-card-desc">Features used by the prediction model.</div>
+<div class="metro-card metro-card-magenta">
+    <div class="metro-card-title">Model Features</div>
+    <div class="metro-card-desc">Features used by the prediction model.</div>
 
-            <span class="feature-pill">Model Year</span>
-            <span class="feature-pill">Milage</span>
-            <span class="feature-pill">Horsepower</span>
-            <span class="feature-pill">Engine Liter</span>
-            <span class="feature-pill">Cylinders</span>
-            <span class="feature-pill">Brand</span>
-            <span class="feature-pill">Fuel Type</span>
-            <span class="feature-pill">Transmission</span>
-            <span class="feature-pill">Car Class</span>
-            <span class="feature-pill">Exterior Color</span>
-            <span class="feature-pill">Interior Color</span>
-            <span class="feature-pill">Accident</span>
-        </div>
-        """, unsafe_allow_html=True)
+    <span class="feature-pill">Model Year</span>
+    <span class="feature-pill">Milage</span>
+    <span class="feature-pill">Horsepower</span>
+    <span class="feature-pill">Engine Liter</span>
+    <span class="feature-pill">Cylinders</span>
+    <span class="feature-pill">Brand</span>
+    <span class="feature-pill">Fuel Type</span>
+    <span class="feature-pill">Transmission</span>
+    <span class="feature-pill">Car Class</span>
+    <span class="feature-pill">Exterior Color</span>
+    <span class="feature-pill">Interior Color</span>
+    <span class="feature-pill">Accident</span>
+</div>
+""", unsafe_allow_html=True)
 
     # --- PREDICTION LOGIC ---
     if predict_btn:
@@ -672,61 +672,61 @@ if data_ready:
     with right_col:
         if "final_price" in st.session_state:
             st.markdown(f"""
-            <div class="result-tile">
-                <div class="result-label">🎯 Estimated Market Price</div>
-                <div class="result-price">${st.session_state.final_price:,.2f}</div>
-                <div class="result-caption">{st.session_state.prediction_caption}</div>
-            </div>
-            """, unsafe_allow_html=True)
+<div class="result-tile">
+    <div class="result-label">🎯 Estimated Market Price</div>
+    <div class="result-price">${st.session_state.final_price:,.2f}</div>
+    <div class="result-caption">{st.session_state.prediction_caption}</div>
+</div>
+""", unsafe_allow_html=True)
         else:
             st.markdown("""
-            <div class="empty-result-tile">
-                <div class="empty-result-title">No Prediction Yet</div>
-                <div class="empty-result-desc">
-                    Complete the technical specifications and click Predict Market Price.
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+<div class="empty-result-tile">
+    <div class="empty-result-title">No Prediction Yet</div>
+    <div class="empty-result-desc">
+        Complete the technical specifications and click Predict Market Price.
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
         st.markdown(f"""
-        <div class="metro-card metro-card-green">
-            <div class="metro-card-title">Selected Car Benchmark</div>
-            <div class="metro-card-desc">Milage distribution from similar selected vehicles.</div>
+<div class="metro-card metro-card-green">
+    <div class="metro-card-title">Selected Car Benchmark</div>
+    <div class="metro-card-desc">Milage distribution from similar selected vehicles.</div>
 
-            <div class="benchmark-row">
-                <div class="benchmark-label">Lowest Milage</div>
-                <div class="benchmark-value">{min_milage:,} miles</div>
-            </div>
+    <div class="benchmark-row">
+        <div class="benchmark-label">Lowest Milage</div>
+        <div class="benchmark-value">{min_milage:,} miles</div>
+    </div>
 
-            <div class="benchmark-row">
-                <div class="benchmark-label">Average Milage</div>
-                <div class="benchmark-value">{avg_milage:,} miles</div>
-            </div>
+    <div class="benchmark-row">
+        <div class="benchmark-label">Average Milage</div>
+        <div class="benchmark-value">{avg_milage:,} miles</div>
+    </div>
 
-            <div class="benchmark-row">
-                <div class="benchmark-label">Highest Milage</div>
-                <div class="benchmark-value">{max_milage:,} miles</div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+    <div class="benchmark-row">
+        <div class="benchmark-label">Highest Milage</div>
+        <div class="benchmark-value">{max_milage:,} miles</div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
         st.markdown("""
-        <div class="metro-card metro-card-orange">
-            <div class="metro-card-title">How Prediction Works</div>
-            <div class="metro-card-desc">Short workflow of the prediction system.</div>
+<div class="metro-card metro-card-orange">
+    <div class="metro-card-title">How Prediction Works</div>
+    <div class="metro-card-desc">Short workflow of the prediction system.</div>
 
-            <div class="step-box">1. Select brand, model, and model year.</div>
-            <div class="step-box">2. Technical options adjust based on available dataset records.</div>
-            <div class="step-box">3. The regression model estimates the used car market price.</div>
-        </div>
-        """, unsafe_allow_html=True)
+    <div class="step-box">1. Select brand, model, and model year.</div>
+    <div class="step-box">2. Technical options adjust based on available dataset records.</div>
+    <div class="step-box">3. The regression model estimates the used car market price.</div>
+</div>
+""", unsafe_allow_html=True)
 
 else:
     st.markdown("""
-    <div class="metro-header">
-        <div class="metro-title">🚘 Final Project Data Science Group 7 : Team Outliers</div>
-        <p class="metro-subtitle">Used car price prediction based on real-time dataset specifications.</p>
-    </div>
-    """, unsafe_allow_html=True)
+<div class="metro-header">
+    <div class="metro-title">🚘 Final Project Data Science Group 7 : Team Outliers</div>
+    <p class="metro-subtitle">Used car price prediction based on real-time dataset specifications.</p>
+</div>
+""", unsafe_allow_html=True)
 
 st.markdown("<div class='footer'>Developed by Fabian RM</div>", unsafe_allow_html=True)
