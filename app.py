@@ -21,7 +21,7 @@ try:
     model = load_model()
     data_ready = True
 except Exception as e:
-    st.error(f"⚠️ Gagal memuat data atau model: {e}")
+    st.error(f"⚠️ Failed to load data or model: {e}")
     data_ready = False
 
 # --- LOGIC CAR CLASS ---
@@ -37,38 +37,77 @@ def get_car_class(brand):
 
 # --- UI START ---
 st.title("🚘 Car Price Predictor")
-st.markdown("Prediksi harga mobil bekas berdasarkan dataset real-time.")
+st.markdown("Used car price prediction based on real-time dataset specifications.")
 
 if data_ready:
     # --- DYNAMIC FILTERING LOGIC ---
     brand_list = sorted(df_raw['brand'].unique())
-    selected_brand = st.selectbox("Pilih Jenama (Brand)", brand_list)
+    selected_brand = st.selectbox("Brand", brand_list)
 
     filtered_models = df_raw[df_raw['brand'] == selected_brand]
     model_list = sorted(filtered_models['model'].unique())
-    selected_model = st.selectbox("Pilih Model", model_list)
+    selected_model = st.selectbox("Model", model_list)
 
     filtered_years = filtered_models[filtered_models['model'] == selected_model]
     year_list = sorted(filtered_years['model_year'].unique(), reverse=True)
-    selected_year = st.selectbox("Pilih Tahun", year_list)
+    selected_year = st.selectbox("Model Year", year_list)
 
-    # 4. Ambil spesifikasi EXACT (Pasti) untuk mobil di tahun tersebut
     exact_car = filtered_years[filtered_years['model_year'] == selected_year]
 
     st.markdown("---")
 
     # --- FORM SPESIFIKASI ---
     with st.form("spec_form"):
-        st.subheader("Detail Spesifikasi")
+        st.subheader("Technical Specifications")
         
         car_class = get_car_class(selected_brand)
-        st.info(f"📋 Segmen Terdeteksi: **{car_class}**")
+        st.info(f"📋 Detected Car Class: **{car_class}**")
         
         col1, col2 = st.columns(2)
         with col1:
-            # Mengambil median milage untuk tahun tersebut sebagai default
-            milage = st.number_input("Jarak Tempuh (Miles)", min_value=0, value=int(exact_car['milage'].median()))
+            milage = st.number_input("Milage", min_value=0, value=int(exact_car['milage'].median()))
+            horsepower = st.number_input("Horsepower", min_value=0.0, value=float(exact_car['horsepower'].median()))
+            engine_liter = st.number_input("Engine Liter", min_value=0.0, value=float(exact_car['engine_liter'].median()), step=0.1)
+            cylinders = st.number_input("Cylinders", min_value=0.0, value=float(exact_car['cylinders'].median()), step=1.0)
+        
+        with col2:
+            fuel_options = exact_car['fuel_type'].unique().tolist()
+            trans_options = exact_car['transmission'].unique().tolist()
             
-            # Value otomatis mengikuti dataset untuk mobil tersebut
-            horsepower = st.number_input("Horsepower (HP)", min_value=0.0, value=float(exact_car['horsepower'].median()))
-            engine_liter = st.number_input("Kapasiti Enjin (L)", min_value=0.0, value=float(exact_car['engine_liter'].median()), step=0.1
+            fuel_type = st.selectbox("Fuel Type", fuel_options)
+            transmission = st.selectbox("Transmission", trans_options)
+            accident = st.selectbox("Accident", ["None Reported", "Accident Reported"])
+            ext_col = st.selectbox("Exterior Color", ["Neutral", "Exotic"])
+            int_col = st.selectbox("Interior Color", ["Neutral", "Exotic"])
+
+        predict_btn = st.form_submit_button("Predict Market Price", type="primary")
+
+    if predict_btn:
+        acc_val = 0 if accident == "None Reported" else 1
+        
+        input_df = pd.DataFrame({
+            'model_year': [selected_year],
+            'milage': [milage],
+            'horsepower': [horsepower],
+            'engine_liter': [engine_liter],
+            'cylinders': [cylinders],
+            'brand': [selected_brand],
+            'fuel_type': [fuel_type],
+            'transmission': [transmission],
+            'car_class': [car_class],
+            'ext_col_group': [ext_col],
+            'int_col_group': [int_col],
+            'accident': [acc_val]
+        })
+
+        try:
+            pred_log = model.predict(input_df)
+            final_price = np.expm1(pred_log)[0]
+
+            st.success(f"### 🎯 Estimated Price: ${final_price:,.2f}")
+            st.caption(f"Prediction for {selected_brand} {selected_model} ({selected_year})")
+            
+        except Exception as e:
+            st.error(f"Prediction error occurred: {e}")
+
+st.markdown("<br><hr><p style='text-align: center; color: grey;'>Developed by Fabian RM</p>", unsafe_allow_html=True)
