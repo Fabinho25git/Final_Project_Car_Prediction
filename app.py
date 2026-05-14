@@ -231,7 +231,7 @@ st.markdown("""
 <div class="hero-card">
     <div class="hero-title">🚘 Final Project Data Science Group 7 : Team Outliers</div>
     <ol class="team-list">
-        <li>Artorius Weelyn Jawra (Ketua)</li>
+        <li>Artorius Weelyn Jawra</li>
         <li>Fabian Rashed Majduddin</li>
         <li>Kurniati</li>
         <li>Gunaryono Ary</li>
