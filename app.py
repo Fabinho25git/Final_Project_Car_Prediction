@@ -12,7 +12,7 @@ st.set_page_config(
 
 # --- HEADER ---
 st.title("🚘 Used Car Price Predictor")
-st.markdown("Enter the vehicle's specifications below to get a data-driven market price estimate powered by XGBoost.")
+st.markdown("Masukkan spesifikasi kenderaan untuk mendapatkan anggaran harga pasaran berasaskan data.")
 
 # --- LOAD MODEL ---
 @st.cache_resource
@@ -23,114 +23,125 @@ try:
     model = load_model()
     model_loaded = True
 except FileNotFoundError:
-    st.error("⚠️ Model file 'test_final.pkl' not found. Please ensure it is in the same directory.")
+    st.error("⚠️ Fail model 'test_final.pkl' tidak dijumpai.")
     model_loaded = False
 
-# --- LOGIC: OTOMATISASI CAR CLASS ---
-luxury_brands = ['Porsche', 'Lamborghini', 'Bentley', 'Aston Martin', 'Ferrari', 'McLaren', 'Rolls-Royce', 'Lotus', 'Bugatti']
-premium_brands = ['BMW', 'Mercedes-Benz', 'Audi', 'Lexus', 'Cadillac', 'Jaguar', 'Genesis', 'Lincoln', 'Land Rover', 'Alfa Romeo', 'Maserati']
-entry_level_brands = ['Kia', 'Hyundai', 'Mitsubishi', 'Nissan', 'Suzuki', 'FIAT', 'smart', 'Scion', 'Saturn', 'Pontiac', 'Mercury']
-
-def get_car_class(selected_brand):
-    if selected_brand in luxury_brands: return '1. Luxury'
-    elif selected_brand in premium_brands: return '2. Premium'
-    elif selected_brand in entry_level_brands: return '4. Entry Level'
-    else: return '3. Mainstream'
-
-# --- LOGIC: DATABASE DYNAMIC DROPDOWN ---
-# Catatan: Karena kita tidak me-load file CSV di cloud agar aplikasi tetap ringan,
-# kita membuat kamus data (dictionary) untuk memetakan Brand ke Modelnya.
-brand_model_dict = {
-    "Aston Martin": ["Vantage", "DB11", "DBS", "Valhalla"],
-    "BMW": ["330i Sport", "M3", "M4", "X5", "7 Series"],
-    "Dodge": ["Charger SRT", "Challenger", "Durango", "Viper"],
-    "Hyundai": ["Elantra Standard", "Palisade", "Santa Fe", "Ioniq 5"],
-    "Porsche": ["911 Turbo", "Cayman", "Panamera", "Macan", "Taycan"],
-    "Toyota": ["Camry XLE", "Corolla", "Land Cruiser", "Supra", "GR Yaris"],
-    "Honda": ["Civic Type R", "Accord", "CR-V", "HR-V"],
-    "Ford": ["Mustang", "F-150", "Bronco", "Explorer"]
+# --- LOGIC: DATABASE KENDERAAN REALISTIK ---
+# Kita gunakan struktur: { "Brand": { "Model": [Senarai Tahun] } }
+car_database = {
+    "Porsche": {
+        "911 Turbo": [2024, 2023, 2022, 2021, 2020],
+        "Taycan": [2024, 2023, 2022, 2021, 2020],
+        "Cayenne": [2024, 2023, 2022, 2021, 2020, 2019, 2018]
+    },
+    "BMW": {
+        "330i Sport": [2022, 2021, 2020, 2019],
+        "M4": [2024, 2023, 2022, 2021],
+        "X5": [2024, 2023, 2022, 2021, 2020, 2019]
+    },
+    "Toyota": {
+        "Camry XLE": [2024, 2023, 2022, 2021, 2020, 2019, 2018],
+        "GR Supra": [2024, 2023, 2022, 2021, 2020],
+        "Land Cruiser": [2024, 2023, 2022, 2021, 2020, 2015, 2010]
+    },
+    "Hyundai": {
+        "Ioniq 5": [2024, 2023, 2022],
+        "Elantra": [2024, 2023, 2022, 2021, 2020],
+        "Palisade": [2024, 2023, 2022, 2021, 2020]
+    }
 }
+
+# --- LOGIC: PENENTUAN CAR CLASS OTOMATIS ---
+luxury_brands = ['Porsche', 'Lamborghini', 'Bentley', 'Aston Martin', 'Ferrari']
+premium_brands = ['BMW', 'Mercedes-Benz', 'Audi', 'Lexus', 'Land Rover']
+entry_brands = ['Kia', 'Hyundai', 'Mitsubishi', 'Nissan']
+
+def get_car_class(brand):
+    if brand in luxury_brands: return '1. Luxury'
+    elif brand in premium_brands: return '2. Premium'
+    elif brand in entry_brands: return '4. Entry Level'
+    else: return '3. Mainstream'
 
 # --- USER INPUT FORM ---
 if model_loaded:
     with st.form("prediction_form"):
-        st.subheader("Vehicle Identity")
+        st.subheader("Identiti Kenderaan")
         
-        # Baris 1: Brand dan Model (Dinamis)
-        col1, col2 = st.columns(2)
+        col1, col2, col3 = st.columns(3)
         with col1:
-            # Dropdown Brand mengambil dari kunci (keys) di dictionary
-            brand = st.selectbox("Brand", list(brand_model_dict.keys()))
+            # 1. Pilih Brand
+            brand_list = sorted(list(car_database.keys()))
+            selected_brand = st.selectbox("Jenama", brand_list)
+            
         with col2:
-            # Dropdown Model otomatis berubah isi list-nya mengikuti Brand yang dipilih
-            model_name = st.selectbox("Model", brand_model_dict[brand])
-
-        # Baris 2: Tahun dan Milage
-        col3, col4 = st.columns(2)
+            # 2. Pilih Model berdasarkan Brand yang dipilih
+            model_list = sorted(list(car_database[selected_brand].keys()))
+            selected_model = st.selectbox("Model", model_list)
+            
         with col3:
-            model_year = st.selectbox("Model Year", list(range(2026, 1989, -1)), index=5) # Default di tahun 2021
-        with col4:
-            milage = st.number_input("Milage (miles)", min_value=0, value=30000, step=1000)
-            
-        st.markdown("---")
-        
-        st.subheader("Technical Specifications")
-        
-        # Tampilkan Car Class secara otomatis tanpa perlu diinput user
-        car_class = get_car_class(brand)
-        st.info(f"💡 System Auto-Detected Car Segment: **{car_class}**")
-        
-        col5, col6 = st.columns(2)
-        with col5:
-            horsepower = st.number_input("Horsepower (HP)", min_value=0.0, value=335.0, step=10.0)
-            engine_liter = st.number_input("Engine Capacity (L)", min_value=0.0, value=3.0, step=0.1)
-            cylinders = st.number_input("Cylinders", min_value=0.0, value=6.0, step=1.0)
-        with col6:
-            fuel_type = st.selectbox("Fuel Type", ["Gasoline", "Diesel", "Hybrid", "Electric", "E85 Flex Fuel", "Other"])
-            transmission = st.selectbox("Transmission", ["Automatic", "Manual", "Dual Shift", "CVT", "Other"])
-            accident = st.selectbox("Accident History", ["None Reported", "Accident/Damage Reported"])
-            
-        st.markdown("---")
-        
-        st.subheader("Cosmetics")
-        col7, col8 = st.columns(2)
-        with col7:
-            ext_col_group = st.selectbox("Exterior Color", ["Neutral", "Exotic"])
-        with col8:
-            int_col_group = st.selectbox("Interior Color", ["Neutral", "Exotic"])
+            # 3. Pilih Tahun berdasarkan Model yang dipilih
+            year_list = car_database[selected_brand][selected_model]
+            selected_year = st.selectbox("Tahun", year_list)
 
-        # Submit button
-        submit_button = st.form_submit_button(label="Predict Market Price", type="primary")
+        st.markdown("---")
+        
+        st.subheader("Spesifikasi Teknikal")
+        
+        # Car Class dikesan secara automatik
+        car_class = get_car_class(selected_brand)
+        st.info(f"📋 Segmen Dikesan: **{car_class}**")
+        
+        col4, col5 = st.columns(2)
+        with col4:
+            milage = st.number_input("Batu Nautika (Milage)", min_value=0, value=25000, step=1000)
+            horsepower = st.number_input("Horsepower (HP)", min_value=0.0, value=300.0)
+            engine_liter = st.number_input("Kapasiti Enjin (L)", min_value=0.0, value=2.0, step=0.1)
+        with col5:
+            fuel_type = st.selectbox("Jenis Bahan Api", ["Gasoline", "Diesel", "Hybrid", "Electric"])
+            transmission = st.selectbox("Transmisi", ["Automatic", "Manual", "CVT", "Dual Shift"])
+            accident = st.selectbox("Rekod Kemalangan", ["None Reported", "Accident Reported"])
+
+        st.markdown("---")
+        
+        st.subheader("Estetika")
+        col6, col7 = st.columns(2)
+        with col6:
+            ext_col = st.selectbox("Warna Luaran", ["Neutral", "Exotic"])
+            cylinders = st.number_input("Bilangan Silinder", min_value=0.0, value=4.0, step=1.0)
+        with col7:
+            int_col = st.selectbox("Warna Dalaman", ["Neutral", "Exotic"])
+
+        submit_button = st.form_submit_button(label="Ramal Harga", type="primary")
 
 # --- PREDICTION LOGIC ---
 if model_loaded and submit_button:
     accident_val = 0 if accident == "None Reported" else 1
 
-    input_data = pd.DataFrame({
-        'model_year': [model_year],
+    # Format data untuk input model (XGBoost)
+    input_df = pd.DataFrame({
+        'model_year': [selected_year],
         'milage': [milage],
         'horsepower': [horsepower],
         'engine_liter': [engine_liter],
         'cylinders': [cylinders],
-        'brand': [brand],
+        'brand': [selected_brand],
         'fuel_type': [fuel_type],
         'transmission': [transmission],
         'car_class': [car_class],
-        'ext_col_group': [ext_col_group],
-        'int_col_group': [int_col_group],
+        'ext_col_group': [ext_col],
+        'int_col_group': [int_col],
         'accident': [accident_val]
     })
 
     try:
-        log_price_pred = model.predict(input_data)
-        actual_price = np.expm1(log_price_pred)[0]
+        pred_log = model.predict(input_df)
+        final_price = np.expm1(pred_log)[0]
 
-        st.success("### 🎯 Estimated Market Value")
-        st.metric(label=f"{brand} {model_name} ({model_year})", value=f"${actual_price:,.2f}")
+        st.success(f"### 🎯 Anggaran Harga: ${final_price:,.2f}")
+        st.caption(f"Ramalan untuk {selected_brand} {selected_model} ({selected_year})")
         
     except Exception as e:
-        st.error(f"An error occurred during prediction: {e}")
+        st.error(f"Ralat semasa ramalan: {e}")
 
 # --- FOOTER ---
-st.markdown("<br><br>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; color: grey;'>Developed by Fabian RM</p>", unsafe_allow_html=True)
+st.markdown("<br><hr><p style='text-align: center; color: grey;'>Developed by Fabian RM</p>", unsafe_allow_html=True)
