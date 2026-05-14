@@ -10,19 +10,25 @@ st.set_page_config(
     layout="wide"
 )
 
-# --- CUSTOM CSS UI ---
+# --- CUSTOM CSS UI: MICROSOFT LUMIA / METRO STYLE ---
 st.markdown("""
 <style>
+    /* Main App Background */
     .stApp {
-        background: linear-gradient(135deg, #f5f7fb 0%, #eef2f7 100%);
+        background:
+            radial-gradient(circle at top left, rgba(0, 120, 215, 0.22), transparent 30%),
+            radial-gradient(circle at bottom right, rgba(227, 0, 140, 0.18), transparent 32%),
+            #111111;
+        color: white;
     }
 
     .block-container {
         padding-top: 1.5rem;
         padding-bottom: 2rem;
-        max-width: 1250px;
+        max-width: 1280px;
     }
 
+    /* Hide Streamlit Default UI */
     #MainMenu {
         visibility: hidden;
     }
@@ -35,295 +41,368 @@ st.markdown("""
         visibility: hidden;
     }
 
-    section[data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #101828 0%, #1d2939 100%);
-        border-right: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    section[data-testid="stSidebar"] label {
-        color: #f2f4f7 !important;
-        font-weight: 700 !important;
-    }
-
-    section[data-testid="stSidebar"] .stMarkdown {
-        color: white;
-    }
-
-    .sidebar-title {
-        color: white;
-        font-size: 1.45rem;
-        font-weight: 850;
-        line-height: 1.2;
-        margin-bottom: 0.35rem;
-    }
-
-    .sidebar-desc {
-        color: #d0d5dd;
-        font-size: 0.9rem;
-        line-height: 1.5;
-        margin-bottom: 1.2rem;
-    }
-
-    .sidebar-divider {
-        height: 1px;
-        background: rgba(255, 255, 255, 0.14);
-        margin: 1.2rem 0;
-    }
-
-    .hero-card {
-        background: linear-gradient(135deg, #101828 0%, #1d2939 100%);
+    /* Page Header */
+    .metro-header {
+        background: linear-gradient(135deg, #0078D7 0%, #5C2D91 100%);
         padding: 2rem 2.2rem;
-        border-radius: 28px;
-        box-shadow: 0 18px 45px rgba(16, 24, 40, 0.18);
-        margin-bottom: 1.5rem;
+        border-radius: 0px;
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+        margin-bottom: 1.2rem;
         color: white;
+        border-left: 8px solid #00B7C3;
     }
 
-    .hero-title {
-        font-size: 2.1rem;
+    .metro-title {
+        font-size: 2.35rem;
         font-weight: 900;
-        margin-bottom: 1rem;
+        line-height: 1.15;
         letter-spacing: -0.04em;
-        line-height: 1.2;
+        margin-bottom: 1rem;
     }
 
-    .hero-subtitle {
+    .metro-subtitle {
         font-size: 1rem;
-        color: #d0d5dd;
+        color: rgba(255, 255, 255, 0.88);
         margin-top: 1rem;
         margin-bottom: 0;
+        font-weight: 500;
     }
 
     .team-list {
         margin-top: 0.8rem;
         margin-bottom: 0.8rem;
-        color: #f2f4f7;
+        color: rgba(255, 255, 255, 0.95);
         font-size: 0.98rem;
-        line-height: 1.75;
+        line-height: 1.65;
         font-weight: 500;
         padding-left: 1.2rem;
     }
 
     .team-list li {
-        margin: 0.12rem 0;
+        margin: 0.1rem 0;
         padding-left: 0.25rem;
     }
 
-    .dashboard-card {
-        background: white;
-        padding: 1.4rem 1.5rem;
-        border-radius: 24px;
-        box-shadow: 0 12px 30px rgba(16, 24, 40, 0.08);
-        border: 1px solid rgba(208, 213, 221, 0.8);
-        margin-bottom: 1.2rem;
+    /* Metro Tiles */
+    .metro-tile {
+        padding: 1.35rem;
+        min-height: 130px;
+        color: white;
+        border-radius: 0px;
+        box-shadow: 0 14px 32px rgba(0, 0, 0, 0.32);
+        margin-bottom: 1rem;
+        transition: transform 0.18s ease-in-out, box-shadow 0.18s ease-in-out;
     }
 
-    .dashboard-title {
-        font-size: 1.2rem;
-        font-weight: 850;
-        color: #101828;
-        margin-bottom: 0.35rem;
+    .metro-tile:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 18px 42px rgba(0, 0, 0, 0.42);
     }
 
-    .dashboard-desc {
-        color: #667085;
-        font-size: 0.92rem;
-        margin-bottom: 1.15rem;
+    .tile-blue {
+        background: #0078D7;
     }
 
-    .summary-card {
-        background: white;
-        border-radius: 22px;
-        padding: 1.25rem;
-        border: 1px solid #eaecf0;
-        box-shadow: 0 8px 22px rgba(16, 24, 40, 0.06);
-        min-height: 108px;
+    .tile-cyan {
+        background: #00B7C3;
     }
 
-    .summary-label {
-        color: #667085;
+    .tile-green {
+        background: #107C10;
+    }
+
+    .tile-purple {
+        background: #5C2D91;
+    }
+
+    .tile-magenta {
+        background: #E3008C;
+    }
+
+    .tile-orange {
+        background: #F7630C;
+    }
+
+    .tile-red {
+        background: #D13438;
+    }
+
+    .tile-dark {
+        background: #1B1B1B;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .tile-label {
         font-size: 0.78rem;
-        font-weight: 800;
         text-transform: uppercase;
-        letter-spacing: 0.06em;
-        margin-bottom: 0.35rem;
+        letter-spacing: 0.08em;
+        font-weight: 850;
+        opacity: 0.9;
+        margin-bottom: 0.55rem;
     }
 
-    .summary-value {
-        color: #101828;
-        font-size: 1.28rem;
+    .tile-value {
+        font-size: 1.45rem;
         font-weight: 900;
-        line-height: 1.25;
+        line-height: 1.18;
+        letter-spacing: -0.03em;
     }
 
-    .summary-small {
-        color: #475467;
-        font-size: 0.92rem;
-        font-weight: 650;
-        margin-top: 0.2rem;
+    .tile-small {
+        font-size: 0.88rem;
+        font-weight: 600;
+        opacity: 0.9;
+        margin-top: 0.4rem;
     }
 
-    .mini-card {
-        background: #f9fafb;
-        border: 1px solid #eaecf0;
-        border-radius: 18px;
-        padding: 1rem;
-        margin-bottom: 0.75rem;
+    .tile-number {
+        font-size: 2.1rem;
+        font-weight: 950;
+        line-height: 1;
+        letter-spacing: -0.05em;
     }
 
-    .mini-label {
-        color: #667085;
-        font-size: 0.78rem;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
+    /* Main Cards */
+    .metro-card {
+        background: rgba(255, 255, 255, 0.96);
+        color: #111111;
+        padding: 1.5rem;
+        border-radius: 0px;
+        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.38);
+        margin-bottom: 1.2rem;
+        border-top: 8px solid #0078D7;
+    }
+
+    .metro-card-purple {
+        border-top: 8px solid #5C2D91;
+    }
+
+    .metro-card-green {
+        border-top: 8px solid #107C10;
+    }
+
+    .metro-card-magenta {
+        border-top: 8px solid #E3008C;
+    }
+
+    .metro-card-orange {
+        border-top: 8px solid #F7630C;
+    }
+
+    .metro-card-title {
+        font-size: 1.35rem;
+        font-weight: 900;
+        color: #111111;
         margin-bottom: 0.35rem;
+        letter-spacing: -0.03em;
     }
 
-    .mini-value {
-        color: #101828;
-        font-size: 1.05rem;
-        font-weight: 850;
+    .metro-card-desc {
+        font-size: 0.92rem;
+        color: #555555;
+        margin-bottom: 1.1rem;
+        font-weight: 500;
     }
 
-    .feature-pill {
-        display: inline-block;
-        background: #f2f4f7;
-        color: #344054;
-        padding: 0.38rem 0.65rem;
-        border-radius: 999px;
-        font-size: 0.82rem;
-        font-weight: 700;
-        margin: 0.2rem 0.15rem;
-        border: 1px solid #eaecf0;
-    }
-
-    .step-box {
-        background: #f9fafb;
-        border: 1px solid #eaecf0;
-        border-radius: 16px;
-        padding: 0.85rem 1rem;
-        margin-bottom: 0.6rem;
-        color: #344054;
-        font-size: 0.9rem;
-        font-weight: 650;
-    }
-
+    /* Inputs */
     div[data-baseweb="select"] > div {
-        border-radius: 14px;
-        border-color: #d0d5dd;
+        border-radius: 0px;
+        border: 2px solid #d0d0d0;
         min-height: 44px;
         box-shadow: none;
     }
 
+    div[data-baseweb="select"] > div:focus-within {
+        border-color: #0078D7;
+    }
+
     div[data-baseweb="input"] > div {
-        border-radius: 14px;
-        border-color: #d0d5dd;
+        border-radius: 0px;
+        border: 2px solid #d0d0d0;
         min-height: 44px;
         box-shadow: none;
     }
 
     .stNumberInput input {
-        border-radius: 14px;
+        border-radius: 0px;
     }
 
     label {
-        font-weight: 700 !important;
-        color: #344054 !important;
+        font-weight: 850 !important;
+        color: #222222 !important;
         font-size: 0.92rem !important;
     }
 
+    /* Alert / Info */
+    div[data-testid="stAlert"] {
+        border-radius: 0px;
+        border-left: 7px solid #0078D7;
+        box-shadow: none;
+    }
+
+    /* Button */
     .stButton > button {
         width: 100%;
-        height: 3.4rem;
-        border-radius: 16px;
+        height: 3.5rem;
+        border-radius: 0px;
         border: none;
-        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        background: linear-gradient(135deg, #E3008C 0%, #D13438 100%);
         color: white;
-        font-weight: 850;
+        font-weight: 950;
         font-size: 1rem;
-        box-shadow: 0 12px 25px rgba(220, 38, 38, 0.25);
-        transition: all 0.2s ease-in-out;
+        box-shadow: 0 12px 26px rgba(227, 0, 140, 0.28);
+        transition: all 0.18s ease-in-out;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
     }
 
     .stButton > button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 16px 35px rgba(220, 38, 38, 0.35);
+        box-shadow: 0 16px 36px rgba(227, 0, 140, 0.38);
         color: white;
     }
 
-    div[data-testid="stAlert"] {
-        border-radius: 16px;
-        border: none;
-        box-shadow: 0 6px 18px rgba(16, 24, 40, 0.06);
-    }
-
-    .result-card {
-        background: linear-gradient(135deg, #ecfdf3 0%, #d1fadf 100%);
-        border: 1px solid #abefc6;
+    /* Result Card */
+    .result-tile {
+        background: linear-gradient(135deg, #107C10 0%, #00B7C3 100%);
+        color: white;
         padding: 2rem;
-        border-radius: 26px;
-        box-shadow: 0 16px 38px rgba(22, 163, 74, 0.16);
+        border-radius: 0px;
+        box-shadow: 0 18px 42px rgba(0, 0, 0, 0.38);
         margin-bottom: 1.2rem;
     }
 
     .result-label {
-        color: #067647;
-        font-size: 1rem;
-        font-weight: 850;
-        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        opacity: 0.9;
+        margin-bottom: 0.6rem;
     }
 
     .result-price {
-        color: #054f31;
-        font-size: 2.65rem;
+        font-size: 2.85rem;
         font-weight: 950;
-        margin-bottom: 0.5rem;
-        letter-spacing: -0.05em;
+        letter-spacing: -0.06em;
         line-height: 1.05;
+        margin-bottom: 0.65rem;
     }
 
     .result-caption {
-        color: #067647;
         font-size: 0.95rem;
-        font-weight: 600;
+        font-weight: 650;
+        opacity: 0.9;
     }
 
-    .empty-result-card {
-        background: white;
-        border: 1px dashed #d0d5dd;
+    .empty-result-tile {
+        background: #1B1B1B;
+        color: white;
         padding: 2rem;
-        border-radius: 26px;
-        text-align: center;
-        color: #667085;
+        border-radius: 0px;
+        border-left: 8px solid #F7630C;
+        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.36);
         margin-bottom: 1.2rem;
     }
 
     .empty-result-title {
-        color: #344054;
-        font-size: 1.15rem;
-        font-weight: 850;
-        margin-bottom: 0.35rem;
+        font-size: 1.2rem;
+        font-weight: 950;
+        margin-bottom: 0.4rem;
     }
 
+    .empty-result-desc {
+        font-size: 0.92rem;
+        color: rgba(255, 255, 255, 0.78);
+        font-weight: 500;
+    }
+
+    /* Mini Benchmark */
+    .benchmark-row {
+        background: #f3f3f3;
+        padding: 0.9rem 1rem;
+        margin-bottom: 0.65rem;
+        border-left: 6px solid #0078D7;
+    }
+
+    .benchmark-label {
+        color: #555555;
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        font-weight: 850;
+        margin-bottom: 0.25rem;
+    }
+
+    .benchmark-value {
+        color: #111111;
+        font-size: 1.05rem;
+        font-weight: 900;
+    }
+
+    /* Feature Pills */
+    .feature-pill {
+        display: inline-block;
+        background: #0078D7;
+        color: white;
+        padding: 0.42rem 0.7rem;
+        font-size: 0.82rem;
+        font-weight: 850;
+        margin: 0.2rem 0.15rem;
+        border-radius: 0px;
+    }
+
+    .feature-pill:nth-child(2n) {
+        background: #5C2D91;
+    }
+
+    .feature-pill:nth-child(3n) {
+        background: #E3008C;
+    }
+
+    .feature-pill:nth-child(4n) {
+        background: #107C10;
+    }
+
+    .feature-pill:nth-child(5n) {
+        background: #F7630C;
+    }
+
+    /* Step Box */
+    .step-box {
+        background: #f3f3f3;
+        color: #111111;
+        border-left: 6px solid #E3008C;
+        padding: 0.9rem 1rem;
+        margin-bottom: 0.65rem;
+        font-size: 0.9rem;
+        font-weight: 700;
+    }
+
+    /* Footer */
     .footer {
         text-align: center;
-        color: #98a2b3;
+        color: rgba(255, 255, 255, 0.56);
         font-size: 0.9rem;
         margin-top: 2rem;
+        font-weight: 600;
     }
 
     @media (max-width: 768px) {
-        .hero-title {
+        .metro-title {
             font-size: 1.55rem;
         }
 
         .result-price {
-            font-size: 2.3rem;
+            font-size: 2.2rem;
         }
 
-        .hero-card {
+        .metro-header {
             padding: 1.5rem;
+        }
+
+        .metro-tile {
+            min-height: auto;
         }
     }
 </style>
@@ -360,33 +439,44 @@ def get_car_class(brand):
 
 # --- UI START ---
 if data_ready:
-    # --- SIDEBAR VEHICLE SELECTION ---
-    with st.sidebar:
-        st.markdown("""
-        <div class="sidebar-title">🚘 Vehicle Selection</div>
-        <div class="sidebar-desc">
-            Select the brand, model, and year before entering the technical specifications.
-        </div>
-        <div class="sidebar-divider"></div>
-        """, unsafe_allow_html=True)
+    # --- HERO SECTION ---
+    st.markdown("""
+    <div class="metro-header">
+        <div class="metro-title">🚘 Final Project Data Science Group 7 : Team Outliers</div>
+        <ol class="team-list">
+            <li>Artorius Weelyn Jawra (Ketua)</li>
+            <li>Fabian Rashed Majduddin</li>
+            <li>Kurniati</li>
+            <li>Gunaryono Ary</li>
+            <li>Hashfi Hawali</li>
+        </ol>
+        <p class="metro-subtitle">Used car price prediction based on real-time dataset specifications.</p>
+    </div>
+    """, unsafe_allow_html=True)
 
+    # --- VEHICLE SELECTION ---
+    st.markdown("""
+    <div class="metro-card metro-card-purple">
+        <div class="metro-card-title">Vehicle Selection</div>
+        <div class="metro-card-desc">Select the vehicle identity before entering technical specifications.</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    select_col1, select_col2, select_col3 = st.columns(3)
+
+    with select_col1:
         brand_list = sorted(df_raw['brand'].unique())
         selected_brand = st.selectbox("Brand", brand_list)
 
+    with select_col2:
         filtered_models = df_raw[df_raw['brand'] == selected_brand]
         model_list = sorted(filtered_models['model'].unique())
         selected_model = st.selectbox("Model", model_list)
 
+    with select_col3:
         filtered_years = filtered_models[filtered_models['model'] == selected_model]
         year_list = sorted(filtered_years['model_year'].unique(), reverse=True)
         selected_year = st.selectbox("Model Year", year_list)
-
-        st.markdown("""
-        <div class="sidebar-divider"></div>
-        <div class="sidebar-desc">
-            This app predicts used car market price based on the selected vehicle specification.
-        </div>
-        """, unsafe_allow_html=True)
 
     # Filter data spesifik untuk kombinasi Brand, Model, dan Tahun
     exact_car = filtered_years[filtered_years['model_year'] == selected_year]
@@ -405,121 +495,96 @@ if data_ready:
     max_milage = int(exact_car['milage'].max())
     avg_milage = int(exact_car['milage'].mean())
 
-    # --- HERO SECTION ---
-    st.markdown("""
-    <div class="hero-card">
-        <div class="hero-title">🚘 Final Project Data Science Group 7 : Team Outliers</div>
-        <ol class="team-list">
-            <li>Artorius Weelyn Jawra (Ketua)</li>
-            <li>Fabian Rashed Majduddin</li>
-            <li>Kurniati</li>
-            <li>Gunaryono Ary</li>
-            <li>Hashfi Hawali</li>
-        </ol>
-        <p class="hero-subtitle">Used car price prediction based on real-time dataset specifications.</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # --- SELECTED CAR SUMMARY ---
-    st.markdown("""
-    <div class="dashboard-card">
-        <div class="dashboard-title">Selected Vehicle Overview</div>
-        <div class="dashboard-desc">Current selected vehicle based on sidebar input.</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    summary_col1, summary_col2, summary_col3, summary_col4 = st.columns(4)
-
-    with summary_col1:
-        st.markdown(f"""
-        <div class="summary-card">
-            <div class="summary-label">Brand</div>
-            <div class="summary-value">{selected_brand}</div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with summary_col2:
-        st.markdown(f"""
-        <div class="summary-card">
-            <div class="summary-label">Model</div>
-            <div class="summary-value">{selected_model}</div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with summary_col3:
-        st.markdown(f"""
-        <div class="summary-card">
-            <div class="summary-label">Model Year</div>
-            <div class="summary-value">{selected_year}</div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with summary_col4:
-        st.markdown(f"""
-        <div class="summary-card">
-            <div class="summary-label">Car Class</div>
-            <div class="summary-value">{car_class_display}</div>
-        </div>
-        """, unsafe_allow_html=True)
-
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # --- DATASET INSIGHT SUMMARY ---
-    st.markdown("""
-    <div class="dashboard-card">
-        <div class="dashboard-title">Dataset Insight</div>
-        <div class="dashboard-desc">Quick benchmark from similar records in the dataset.</div>
-    </div>
-    """, unsafe_allow_html=True)
+    # --- METRO TILE SUMMARY ---
+    tile_col1, tile_col2, tile_col3, tile_col4 = st.columns(4)
 
+    with tile_col1:
+        st.markdown(f"""
+        <div class="metro-tile tile-blue">
+            <div class="tile-label">Brand</div>
+            <div class="tile-value">{selected_brand}</div>
+            <div class="tile-small">Selected manufacturer</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with tile_col2:
+        st.markdown(f"""
+        <div class="metro-tile tile-purple">
+            <div class="tile-label">Model</div>
+            <div class="tile-value">{selected_model}</div>
+            <div class="tile-small">Selected vehicle model</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with tile_col3:
+        st.markdown(f"""
+        <div class="metro-tile tile-cyan">
+            <div class="tile-label">Model Year</div>
+            <div class="tile-value">{selected_year}</div>
+            <div class="tile-small">Production year</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with tile_col4:
+        st.markdown(f"""
+        <div class="metro-tile tile-magenta">
+            <div class="tile-label">Car Class</div>
+            <div class="tile-value">{car_class_display}</div>
+            <div class="tile-small">Detected automatically</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # --- DATASET INSIGHT TILES ---
     insight_col1, insight_col2, insight_col3, insight_col4 = st.columns(4)
 
     with insight_col1:
         st.markdown(f"""
-        <div class="summary-card">
-            <div class="summary-label">Similar Records</div>
-            <div class="summary-value">{similar_records}</div>
-            <div class="summary-small">cars found</div>
+        <div class="metro-tile tile-green">
+            <div class="tile-label">Similar Records</div>
+            <div class="tile-number">{similar_records}</div>
+            <div class="tile-small">cars found in dataset</div>
         </div>
         """, unsafe_allow_html=True)
 
     with insight_col2:
         st.markdown(f"""
-        <div class="summary-card">
-            <div class="summary-label">Median Milage</div>
-            <div class="summary-value">{median_milage:,}</div>
-            <div class="summary-small">miles</div>
+        <div class="metro-tile tile-orange">
+            <div class="tile-label">Median Milage</div>
+            <div class="tile-number">{median_milage:,}</div>
+            <div class="tile-small">miles</div>
         </div>
         """, unsafe_allow_html=True)
 
     with insight_col3:
         st.markdown(f"""
-        <div class="summary-card">
-            <div class="summary-label">Median Horsepower</div>
-            <div class="summary-value">{median_hp}</div>
-            <div class="summary-small">HP</div>
+        <div class="metro-tile tile-red">
+            <div class="tile-label">Median Horsepower</div>
+            <div class="tile-number">{median_hp}</div>
+            <div class="tile-small">HP</div>
         </div>
         """, unsafe_allow_html=True)
 
     with insight_col4:
         st.markdown(f"""
-        <div class="summary-card">
-            <div class="summary-label">Median Engine</div>
-            <div class="summary-value">{median_engine}L</div>
-            <div class="summary-small">engine capacity</div>
+        <div class="metro-tile tile-dark">
+            <div class="tile-label">Median Engine</div>
+            <div class="tile-number">{median_engine}L</div>
+            <div class="tile-small">engine capacity</div>
         </div>
         """, unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # --- MAIN DASHBOARD LAYOUT ---
+    # --- MAIN LAYOUT ---
     left_col, right_col = st.columns([1.25, 0.75], gap="large")
 
     with left_col:
         st.markdown("""
-        <div class="dashboard-card">
-            <div class="dashboard-title">Technical Specifications</div>
-            <div class="dashboard-desc">Complete the specification details to generate the estimated market price.</div>
+        <div class="metro-card">
+            <div class="metro-card-title">Technical Specifications</div>
+            <div class="metro-card-desc">Complete the specification details to generate the estimated market price.</div>
         """, unsafe_allow_html=True)
 
         with st.form("spec_form"):
@@ -555,6 +620,26 @@ if data_ready:
 
         st.markdown("</div>", unsafe_allow_html=True)
 
+        st.markdown("""
+        <div class="metro-card metro-card-magenta">
+            <div class="metro-card-title">Model Features</div>
+            <div class="metro-card-desc">Features used by the prediction model.</div>
+
+            <span class="feature-pill">Model Year</span>
+            <span class="feature-pill">Milage</span>
+            <span class="feature-pill">Horsepower</span>
+            <span class="feature-pill">Engine Liter</span>
+            <span class="feature-pill">Cylinders</span>
+            <span class="feature-pill">Brand</span>
+            <span class="feature-pill">Fuel Type</span>
+            <span class="feature-pill">Transmission</span>
+            <span class="feature-pill">Car Class</span>
+            <span class="feature-pill">Exterior Color</span>
+            <span class="feature-pill">Interior Color</span>
+            <span class="feature-pill">Accident</span>
+        </div>
+        """, unsafe_allow_html=True)
+
     # --- PREDICTION LOGIC ---
     if predict_btn:
         acc_val = 0 if accident == "None Reported" else 1
@@ -585,15 +670,9 @@ if data_ready:
             st.error(f"Prediction error occurred: {e}")
 
     with right_col:
-        st.markdown("""
-        <div class="dashboard-card">
-            <div class="dashboard-title">Prediction Result</div>
-            <div class="dashboard-desc">Estimated market price will appear after prediction.</div>
-        """, unsafe_allow_html=True)
-
         if "final_price" in st.session_state:
             st.markdown(f"""
-            <div class="result-card">
+            <div class="result-tile">
                 <div class="result-label">🎯 Estimated Market Price</div>
                 <div class="result-price">${st.session_state.final_price:,.2f}</div>
                 <div class="result-caption">{st.session_state.prediction_caption}</div>
@@ -601,72 +680,52 @@ if data_ready:
             """, unsafe_allow_html=True)
         else:
             st.markdown("""
-            <div class="empty-result-card">
+            <div class="empty-result-tile">
                 <div class="empty-result-title">No Prediction Yet</div>
-                Complete the technical specifications and click <b>Predict Market Price</b>.
+                <div class="empty-result-desc">
+                    Complete the technical specifications and click Predict Market Price.
+                </div>
             </div>
             """, unsafe_allow_html=True)
 
-        st.markdown("</div>", unsafe_allow_html=True)
-
         st.markdown(f"""
-        <div class="dashboard-card">
-            <div class="dashboard-title">Selected Car Benchmark</div>
-            <div class="dashboard-desc">Milage distribution from similar selected vehicles.</div>
+        <div class="metro-card metro-card-green">
+            <div class="metro-card-title">Selected Car Benchmark</div>
+            <div class="metro-card-desc">Milage distribution from similar selected vehicles.</div>
 
-            <div class="mini-card">
-                <div class="mini-label">Lowest Milage</div>
-                <div class="mini-value">{min_milage:,} miles</div>
+            <div class="benchmark-row">
+                <div class="benchmark-label">Lowest Milage</div>
+                <div class="benchmark-value">{min_milage:,} miles</div>
             </div>
 
-            <div class="mini-card">
-                <div class="mini-label">Average Milage</div>
-                <div class="mini-value">{avg_milage:,} miles</div>
+            <div class="benchmark-row">
+                <div class="benchmark-label">Average Milage</div>
+                <div class="benchmark-value">{avg_milage:,} miles</div>
             </div>
 
-            <div class="mini-card">
-                <div class="mini-label">Highest Milage</div>
-                <div class="mini-value">{max_milage:,} miles</div>
+            <div class="benchmark-row">
+                <div class="benchmark-label">Highest Milage</div>
+                <div class="benchmark-value">{max_milage:,} miles</div>
             </div>
         </div>
         """, unsafe_allow_html=True)
 
         st.markdown("""
-        <div class="dashboard-card">
-            <div class="dashboard-title">How Prediction Works</div>
-            <div class="dashboard-desc">Short workflow of the prediction system.</div>
+        <div class="metro-card metro-card-orange">
+            <div class="metro-card-title">How Prediction Works</div>
+            <div class="metro-card-desc">Short workflow of the prediction system.</div>
 
-            <div class="step-box">1. Select brand, model, and model year from the sidebar.</div>
+            <div class="step-box">1. Select brand, model, and model year.</div>
             <div class="step-box">2. Technical options adjust based on available dataset records.</div>
             <div class="step-box">3. The regression model estimates the used car market price.</div>
         </div>
         """, unsafe_allow_html=True)
 
-        st.markdown("""
-        <div class="dashboard-card">
-            <div class="dashboard-title">Model Features</div>
-            <div class="dashboard-desc">Features used by the prediction model.</div>
-
-            <span class="feature-pill">Model Year</span>
-            <span class="feature-pill">Milage</span>
-            <span class="feature-pill">Horsepower</span>
-            <span class="feature-pill">Engine Liter</span>
-            <span class="feature-pill">Cylinders</span>
-            <span class="feature-pill">Brand</span>
-            <span class="feature-pill">Fuel Type</span>
-            <span class="feature-pill">Transmission</span>
-            <span class="feature-pill">Car Class</span>
-            <span class="feature-pill">Exterior Color</span>
-            <span class="feature-pill">Interior Color</span>
-            <span class="feature-pill">Accident</span>
-        </div>
-        """, unsafe_allow_html=True)
-
 else:
     st.markdown("""
-    <div class="hero-card">
-        <div class="hero-title">🚘 Final Project Data Science Group 7 : Team Outliers</div>
-        <p class="hero-subtitle">Used car price prediction based on real-time dataset specifications.</p>
+    <div class="metro-header">
+        <div class="metro-title">🚘 Final Project Data Science Group 7 : Team Outliers</div>
+        <p class="metro-subtitle">Used car price prediction based on real-time dataset specifications.</p>
     </div>
     """, unsafe_allow_html=True)
 
