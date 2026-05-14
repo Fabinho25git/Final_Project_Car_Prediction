@@ -231,7 +231,7 @@ st.markdown("""
 <div class="hero-card">
     <div class="hero-title">🚘 Final Project Data Science Group 7 : Team Outliers</div>
     <ol class="team-list">
-        <li>Artorius Weelyn Jawra</li>
+        <li>Artorius Weelyn Jawra (Ketua)</li>
         <li>Fabian Rashed Majduddin</li>
         <li>Kurniati</li>
         <li>Gunaryono Ary</li>
@@ -260,12 +260,6 @@ if data_ready:
     year_list = sorted(filtered_years['model_year'].unique(), reverse=True)
     selected_year = st.selectbox("Model Year", year_list)
 
-    # --- GAMBAR OTOMATIS UNSPLASH ---
-    st.markdown("<br>", unsafe_allow_html=True) # Jarak estetik
-    search_query = f"{selected_brand}-{selected_model}".replace(" ", "-")
-    img_url = f"https://source.unsplash.com/featured/800x400?car,{search_query}"
-    st.image(img_url, use_container_width=True, caption=f"Visual representasi {selected_brand} {selected_model}")
-
     st.markdown("</div>", unsafe_allow_html=True)
 
     # Filter data spesifik untuk kombinasi Brand, Model, dan Tahun
@@ -281,8 +275,8 @@ if data_ready:
     with st.form("spec_form"):
         car_class = get_car_class(selected_brand)
 
-        # Versi display hanya untuk tampilan UI (menghilangkan angka prefix)
-        car_class_display = car_class.split(". ", 1)[1] if ". " in car_class else car_class
+        # Versi display hanya untuk tampilan UI
+        car_class_display = car_class.split(". ", 1)[1]
 
         st.info(f"📋 Detected Car Class: **{car_class_display}**")
         
@@ -292,7 +286,7 @@ if data_ready:
             # Milage tetap input angka karena variasi per mobil sangat tinggi
             milage = st.number_input("Milage", min_value=0, value=int(exact_car['milage'].median()))
             
-            # HP, Engine Liter, dan Cylinders dinamis berdasarkan varian di dataset
+            # HP, Engine Liter, dan Cylinders sekarang dinamis berdasarkan varian di dataset
             hp_options = sorted(exact_car['horsepower'].unique().tolist())
             el_options = sorted(exact_car['engine_liter'].unique().tolist())
             cyl_options = sorted(exact_car['cylinders'].unique().tolist())
