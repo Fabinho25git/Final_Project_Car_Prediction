@@ -101,6 +101,12 @@ if data_ready:
             'accident': [acc_val]
         })
 
-        try:
-        pred_log = model.predict(input_df)
-        final_price = np.expm1(pred_log)
+       try:
+            pred_log = model.predict(input_df)
+            final_price = np.expm1(pred_log)[0]
+
+            st.success(f"### 🎯 Anggaran Harga: ${final_price:,.2f}")
+            st.caption(f"Hasil prediksi untuk {selected_brand} {selected_model} ({selected_year})")
+            
+        except Exception as e:
+            st.error(f"Terjadi ralat saat prediksi: {e}")
