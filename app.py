@@ -373,29 +373,6 @@ st.markdown("""
         font-weight: 500;
     }
 
-    /* Mini Benchmark */
-    .benchmark-row {
-        background: #f3f3f3;
-        padding: 0.9rem 1rem;
-        margin-bottom: 0.65rem;
-        border-left: 6px solid #0078D7;
-    }
-
-    .benchmark-label {
-        color: #555555;
-        font-size: 0.78rem;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        font-weight: 850;
-        margin-bottom: 0.25rem;
-    }
-
-    .benchmark-value {
-        color: #111111;
-        font-size: 1.05rem;
-        font-weight: 900;
-    }
-
     /* Navigation */
     .nav-card {
         background: rgba(255, 255, 255, 0.96);
@@ -649,10 +626,6 @@ if data_ready:
         median_hp = round(exact_car['horsepower'].median(), 1)
         median_engine = round(exact_car['engine_liter'].median(), 1)
 
-        min_milage = int(exact_car['milage'].min())
-        max_milage = int(exact_car['milage'].max())
-        avg_milage = int(exact_car['milage'].mean())
-
         st.markdown("<br>", unsafe_allow_html=True)
 
         # --- METRO TILE SUMMARY ---
@@ -825,28 +798,6 @@ if data_ready:
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
-
-            st.markdown(f"""
-            <div class="metro-card metro-card-green">
-                <div class="metro-card-title">Selected Car Benchmark</div>
-                <div class="metro-card-desc">Milage distribution from similar selected vehicles.</div>
-
-                <div class="benchmark-row">
-                    <div class="benchmark-label">Lowest Milage</div>
-                    <div class="benchmark-value">{min_milage:,} miles</div>
-                </div>
-
-                <div class="benchmark-row">
-                    <div class="benchmark-label">Average Milage</div>
-                    <div class="benchmark-value">{avg_milage:,} miles</div>
-                </div>
-
-                <div class="benchmark-row">
-                    <div class="benchmark-label">Highest Milage</div>
-                    <div class="benchmark-value">{max_milage:,} miles</div>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
 
         st.markdown("</div>", unsafe_allow_html=True)
 
