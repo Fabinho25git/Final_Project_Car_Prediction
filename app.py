@@ -102,5 +102,5 @@ if data_ready:
         })
 
         try:
-            pred_log = model.predict(input_df)
-            final_price = np.expm1(pred_log)
+        pred_log = model.predict(input_df)
+        final_price = np.expm1(pred_log)
